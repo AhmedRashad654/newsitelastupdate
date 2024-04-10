@@ -1,0 +1,15 @@
+.footer{
+    background-color: var(  --main-color );
+   color: white;
+}
+
+.footer a{
+    color: white  !important;
+}
+
+@media only screen and (max-width: 900px) {
+    .x-sm{
+        width: 33.33333%  !important;
+    }
+
+}
