@@ -1,195 +1,83 @@
-import React from 'react'
-import img2 from "../../assests/msg1018737373-9581.jpg";
-import img4 from "../../assests/msg1018737373-9582.jpg";
-import { Link } from "react-router-dom";
-
+import React, { useEffect, useState } from 'react'
+import axios from 'axios';
+import {useNavigate} from 'react-router-dom'
 export default function FlagArchief() {
+  const [ archief, setArchirf ] = useState( [] );
+  const navigate = useNavigate();
+    useEffect(() => {
+      axios.get("https://syrianrevolution1.com/lists").then((result) => {
+        setArchirf(result.data.data.filter((e) => e.category === "mozaharat"));
+      });
+    }, []);
   return (
     <div>
-      
       <div className="demonstrations py-3">
         <div className="container">
-         
-          <div className="row">
+          <div className="row" style={{ justifyContent: "space-between" }}>
             <div className="col-md-6">
               <div className="row gy-2">
-                <div className="col-md-6">
-                  <div className="news">
-                    <div className="item">
-                      <div className="image">
-                        <img
-                          src={img2}
-                          alt="img"
-                          className=" w-100 rounded-3"
-                        />
-                      </div>
-                      <div className="text">
-                        <p>
-                          الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر
-                          الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر ....
-                          <Link className="nav-link d-inline-block mx-1 px-3 rounded-3">
-                            المزيد
-                          </Link>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <div className="news">
-                    <div className="item">
-                      <div className="image">
-                        <img
-                          src={img2}
-                          alt="image"
-                          className=" w-100 rounded-3"
-                        />
-                      </div>
-                      <div className="text">
-                        <p>
-                          الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر
-                          الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر ....
-                          <Link className="nav-link d-inline-block mx-1 px-3 rounded-3">
-                            المزيد
-                          </Link>
-                        </p>
+                {archief.slice(4, 8).map((e) => (
+                  <div className="col-md-6">
+                    <div className="news">
+                      <div className="item">
+                        <div className="image">
+                          <img
+                            src={`https://syrianrevolution1.com/postImages/${e?.selfImg}`}
+                            alt="mozaharat"
+                            className=" w-100 rounded-3"
+                          />
+                        </div>
+                        <div className="text">
+                          <p>
+                            {e?.name}<br/>
+                            <button
+                              className="btu d-inline-block mx-1 px-3 rounded-3"
+                              onClick={() => navigate(`/newsDetails/${e._id}`)}
+                            >
+                              المزيد
+                            </button>
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div className="col-md-6">
-                  <div className="news">
-                    <div className="item">
-                      <div className="image">
-                        <img
-                          src={img2}
-                          alt="image"
-                          className=" w-100 rounded-3"
-                        />
-                      </div>
-                      <div className="text">
-                        <p>
-                          الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر
-                          الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر ....
-                          <Link className="nav-link d-inline-block mx-1 px-3 rounded-3">
-                            المزيد
-                          </Link>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-6">
-                  <div className="news">
-                    <div className="item">
-                      <div className="image">
-                        <img
-                          src={img2}
-                          alt="image"
-                          className=" w-100 rounded-3"
-                        />
-                      </div>
-                      <div className="text">
-                        <p>
-                          الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر
-                          الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر ....
-                          <Link className="nav-link d-inline-block mx-1 px-3 rounded-3">
-                            المزيد
-                          </Link>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
-            <div className="col-md-6 muted p-2 overflow-hidden">
-                <div className="row border-bottom p-3 border-2 overflow-hidden">
+            <div className="lastSlider col-md-5">
+              <div className=" muted p-2 overflow-hidden">
+                {archief.map((e) => (
+                  <div
+                    className="row border-bottom pb-2 pt-2 border-2 overflow-hidden"
+                    style={{ backgroundColor: "#fdfafa" }}
+                  >
                     <div className="col-md-4">
-                        <img src={img4} alt="image" className="w-100" />
+                      <img
+                        src={`https://syrianrevolution1.com/postImages/${e?.selfImg}`}
+                        alt="lastNews"
+                        className="w-100"
+                      />
                     </div>
                     <div className="col-md-8">
-                    <p>
-                    الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر
-                    الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر
-                    الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر
-                    الخبر  الخبر الخبر ....
-                    <Link className="nav-link d-inline-block mx-1 px-3 rounded-3">
-                      المزيد
-                    </Link>
-                  </p>
+                      <p>
+                        { e?.name}<br/>
+                        <button
+                          className="btu d-inline-block mx-1 px-3 rounded-3"
+                          onClick={() => navigate(`/newsDetails/${e._id}`)}
+                        >
+                          المزيد
+                        </button>
+                      </p>
                     </div>
-                </div>
-                <div className="row border-bottom p-3 border-2 overflow-hidden">
-                    <div className="col-md-4">
-                        <img src={img4} alt="image" className="w-100" />
-                    </div>
-                    <div className="col-md-8">
-                    <p>
-                    الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر
-                    الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر
-                    الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر
-                    الخبر  الخبر الخبر ....
-                    <Link className="nav-link d-inline-block mx-1 px-3 rounded-3">
-                      المزيد
-                    </Link>
-                  </p>
-                    </div>
-                </div>
-                <div className="row border-bottom p-3 border-2 overflow-hidden">
-                    <div className="col-md-4">
-                        <img src={img4} alt="image" className="w-100" />
-                    </div>
-                    <div className="col-md-8">
-                    <p>
-                    الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر
-                    الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر
-                    الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر
-                    الخبر  الخبر الخبر ....
-                    <Link className="nav-link d-inline-block mx-1 px-3 rounded-3">
-                      المزيد
-                    </Link>
-                  </p>
-                    </div>
-                </div>
-                <div className="row border-bottom p-3 border-2 overflow-hidden">
-                    <div className="col-md-4">
-                        <img src={img4} alt="image" className="w-100" />
-                    </div>
-                    <div className="col-md-8">
-                    <p>
-                    الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر
-                    الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر
-                    الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر
-                    الخبر  الخبر الخبر ....
-                    <Link className="nav-link d-inline-block mx-1 px-3 rounded-3">
-                      المزيد
-                    </Link>
-                  </p>
-                    </div>
-                </div>
-                <div className="row border-bottom p-3 border-2 overflow-hidden">
-                    <div className="col-md-4">
-                        <img src={img4} alt="image" className="w-100" />
-                    </div>
-                    <div className="col-md-8">
-                    <p>
-                    الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر
-                    الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر
-                    الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر
-                    الخبر  الخبر الخبر ....
-                    <Link className="nav-link d-inline-block mx-1 px-3 rounded-3">
-                      المزيد
-                    </Link>
-                  </p>
-                    </div>
-                </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 

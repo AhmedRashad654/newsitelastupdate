@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { ContextUser } from '../../context/Context';
 export default function SuccessAddInform() {
-    const {openAuth, setOpenAuth}= useContext(ContextUser)
+    const { setOpenAuth}= useContext(ContextUser)
 
   return (
     <div className={style.RegisterUser}>

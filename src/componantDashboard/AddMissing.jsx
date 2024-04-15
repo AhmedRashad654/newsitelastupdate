@@ -42,7 +42,7 @@ export default function AddAMartyr() {
         "any.required": "     اسم المفقود مطلوب",
       }),
       documents: Joi.string().allow(""),
-      nikename: Joi.string().allow(""),
+      nickname: Joi.string().allow(""),
       dateOfBirth: Joi.string().allow(""),
       responsibleAuthority: Joi.string().required().messages({
         "string.empty": "  الجهة المسئولة مطلوبة",
@@ -58,7 +58,7 @@ export default function AddAMartyr() {
     });
     return schema.validate(addData, { abortEarly: false });
   }
-  console.log(addData);
+
   async function handleSubmit(e) {
     e.preventDefault();
     let responseValidateUser = validationAddUser();
@@ -72,10 +72,10 @@ export default function AddAMartyr() {
       formData.append("name", addData.name);
       formData.append("profileImage", imageProfile);
       formData.append("documents", document);
-      formData.append("nikename", addData.password);
-      formData.append("dateOfBirth", addData.government);
-      formData.append("responsibleAuthority", addData.phone);
-      formData.append("governorate", addData.key);
+      formData.append("nickname", addData.nickname);
+      formData.append("dateOfBirth", addData.dateOfBirth);
+      formData.append("responsibleAuthority", addData.responsibleAuthority);
+      formData.append("governorate", addData.governorate);
       formData.append("fatherName", addData.fatherName);
       formData.append("motherName", addData.motherName);
       formData.append("place", addData.place);
@@ -84,13 +84,14 @@ export default function AddAMartyr() {
       try {
         setLoading(true);
         const response = await fetch(
-          "https://syrianrevolution1.com/childData/66153d779eecb45d98ce4e06",
+          `https://syrianrevolution1.com/childData/${localStorage.getItem(
+                     "idUserLogin"
+                   )}`,
           {
             method: "POST",
             body: formData,
             headers: {
-              Authorization:
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoiYWJvN0BnbWFpbDh1LmNvbSIsImlkIjoiNjYxNTNkNzc5ZWVjYjQ1ZDk4Y2U0ZTA2Iiwicm9sZSI6ImFkbWluIn0sImlhdCI6MTcxMjY2ODAzOX0.2gsWZzjFCXpETFvEq5wZ81eZ2DGKk9oYgxSjjyYXtxE",
+              Authorization:localStorage.getItem('token')
             },
           }
         );
@@ -130,8 +131,7 @@ export default function AddAMartyr() {
             </p>
           )}
         {errorBackUser &&
-          errorBackUser?.error ===
-            'ChildData validation failed: dateOfBirth: Cast to date failed for value "undefined" (type string) at path "dateOfBirth"' && (
+          errorBackUser?.error.includes("ChildData validation failed") && (
             <p className="alert alert-secondary alerthemself">
               التاريخ غير صالح
             </p>
@@ -247,7 +247,7 @@ export default function AddAMartyr() {
             </div>
             <div className={styles.inp1}>
               <p style={{ fontSize: "10px", marginBottom: "5px" }}>
-                الوثائق والملفات
+                وثيقة او ملف (ملف pdf او word او فيديو mp4 او ملف zip)
               </p>
               <label htmlFor="was" className="customfileupload">
                 ارفع المستندات هنا

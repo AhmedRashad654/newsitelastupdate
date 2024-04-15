@@ -1,71 +1,119 @@
-import React, { useState,useContext } from 'react'
+import React, {useContext, useState } from 'react'
 import style from './RegisterUser.module.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import { ContextUser } from '../../context/Context';
-import { useFormik } from 'formik';
-import * as Yup from 'yup'
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import Joi from 'joi';
 
 export default function RegisterUser() {
-  
-    const [ open, setOpen ] = useState( false );
-    const {openAuth, setOpenAuth}= useContext(ContextUser)
-    const [errorMsg, setErrorMsg]= useState('')
-    const [isLoading, setIsLoading]= useState(false)
-    const navigate=useNavigate()
+  const { setOpenAuth } = useContext( ContextUser )
+  ///////////////////////////
+      const [user, setUser] = useState({});
+      const [errorListUser, setErrorListUser] = useState(null);
+      ////////////function handleChange///////////////
+      function handlechange(e) {
+        setUser((prevState) => ({
+          ...prevState,
+          [e.target.name]: e.target.value,
+        }));
+      }
+      /////////handle image////////////////
+      const [imageProfile, setImageProfile] = useState("");
 
-    const validationSchema = Yup.object({
-      username: Yup.string().required('اسم المستخدم مطلوب'),
-      name: Yup.string().required('الاسم مطلوب'),
-      phone: Yup.string().required('رقم الهاتف مطلوب').matches(/^\d{10}$/, 'رقم الهاتف يجب أن يحتوي على 10 أرقام'),
-      government: Yup.string().required('المحافظة مطلوبة'),
-      password: Yup.string().required('كلمة المرور مطلوبة').matches(/^\d{6}$/, 'كلمة المرور يجب أن تحتوي على 6 أرقام'),
-      email: Yup.string().required('البريد الإلكتروني مطلوب').email('من فضلك أدخل بريد إلكتروني صحيح'),
-      key:Yup.string().required('رمز الدخول مطلوب'),
-      selfImg:Yup.string(),
-  });
-  
+      const [loading, setLoading] = useState(false);
+      const [errorBackUser, setErrorBackUser] = useState(null);
+      function handleChangeImageProfile(e) {
+        setImageProfile(e.target.files[0]);
+      }
+      ////////////valid Joi///////////////
+      function validationAddUser() {
+        let schema = Joi.object({
+          username: Joi.string().required().messages({
+            "string.empty": "الاسم  مطلوب",
+            "any.required": "الاسم  مطلوب",
+          }),
+          name: Joi.string().required().messages({
+            "string.empty": "الاسم بالكامل مطلوب",
+            "any.required": "الاسم بالكامل مطلوب",
+          }),
+          docImg: Joi.string().allow(""),
+          selfImg: Joi.string().allow(""),
 
-    const{values,handleSubmit,handleChange,handleBlur,errors,touched, isValid}= useFormik({
-            initialValues:{
-              username:'',
-              name:'',
-              phone:'',
-              government:'',
-              password:'',
-              email:'',
-              key:'',
-              selfImg:'',
+          email: Joi.string()
+            .email({ tlds: ["com", "not", "org"] })
+            .required()
+            .messages({
+              "string.empty": "الايميل  مطلوب",
+              "string.email": "الايميل غير صالح",
+              "any.required": " الايميل مطلوب",
+            }),
+          password: Joi.string().min(6).required().messages({
+            "string.empty": "  كلمة المرور مطلوبة",
+            "string.min": "  كلمة المرور يجب الا تقل عن 6 احرف",
 
-           },
-            onSubmit:async ()=>{
-              setErrorMsg('')
-              setIsLoading('true')
-               try{
-                let response= await fetch.post('http://localhost:4500/users/register', values)
-               console.log(response)
-                if(response){
-                  // navigate('/successregister')
-                }
-               }
-               catch(error){
-                   console.log(error)
-                   setErrorMsg(error.response.data)
-               }
-               
-               setIsLoading('false')
-            },
-            validationSchema
+            "any.required": "  كلمة المرور مطلوبة",
+          }),
+          government: Joi.string().required().messages({
+            "string.empty": "   المحافظة مطلوبة",
+            "any.required": "   المحافظة مطلوبة",
+          }),
+          phone: Joi.string().min(10).required().messages({
+            "string.empty": "    رقم الهاتف مطلوب",
+            "string.min": "    رقم  الهاتف يجب الا يقل عن عشرة احرف",
 
-           })
-
-
+            "any.required": "    رقم الهاتف مطلوب",
+          }),
+          key: Joi.string().required().messages({
+            "string.empty": "    رمز الدخول  مطلوب",
+            "any.required": "     ركز الدخول مطلوب",
+          }),
+       
+        });
+        return schema.validate(user, { abortEarly: false });
+      }
+      /////////////////function submit ///////////////////
+      async function handleSubmit(e) {
+        e.preventDefault();
+        let responseValidateUser = validationAddUser();
+        if (responseValidateUser.error) {
+          setErrorListUser([responseValidateUser.error.details]);
+        } else {
+          setErrorListUser(null);
+          const formData = new FormData();
+          formData.append("username", user.username);
+          formData.append("name", user.name);
+          formData.append("selfImg", imageProfile);
+          formData.append("email", user.email);
+          formData.append("password", user.password);
+          formData.append("government", user.government);
+          formData.append("phone", user.phone);
+          formData.append("key", user.key);
+          try {
+            setLoading(true);
+            const response = await fetch(
+              "https://syrianrevolution1.com/users/register",
+              {
+                method: "POST",
+                body: formData,
+              }
+            );
+            const result = await response.json();
+            setLoading(false);
+            console.log(result);
+            if (result.createdAt) {
+              setOpenAuth("successRegister");
+            } else {
+              setErrorBackUser(result);
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      }
   return (
     <>
       <div className={style.RegisterUser}>
-        <form className={style.forms} onSubmit={handleSubmit} >
+        <form className={style.forms} onSubmit={handleSubmit}>
           <div className={style.headForm}>
             <p>انشاء حساب</p>
             <FontAwesomeIcon
@@ -77,57 +125,102 @@ export default function RegisterUser() {
                 color: "red",
                 cursor: "pointer",
               }}
-              onClick={()=>setOpenAuth('')}
+              onClick={() => setOpenAuth("")}
             />
             <hr />
           </div>
           <div className={style.inform}>
+            {errorListUser &&
+              errorListUser.map((error, index) => (
+                <p
+                  style={{ width: "100%", transform: "translateY(5px)" }}
+                  key={index}
+                  className="alert alert-secondary alerthemself"
+                >
+                  {error[index].message}
+                </p>
+              ))}
             <div className={style.input}>
               <div className={style.inpi}>
                 <label htmlFor="">اسم المستخدم</label>
-                <input type="text" className="form-control" name='username' value={values.username} onChange={handleChange} onBlur={handleBlur}/>
-                {errors.username && touched.username && <p className={`alert alert-danger p-1 fw-1 ${style.alert}`}>{errors.username}</p>}
+                <input
+                  type="text"
+                  className="form-control"
+                  onChange={handlechange}
+                  name="username"
+                />
+                {errorBackUser &&
+                  errorBackUser?.message ===
+                    'E11000 duplicate key error collection: test.users index: username_1 dup key: { username: "ahmed" }' && (
+                    <p className={`error`}>هذا الاسم موجود من قبل</p>
+                  )}
               </div>
-
               <div className={style.inpi}>
                 <label htmlFor="">رقم الهاتف </label>
-                <input type="text" className="form-control" name='phone' onChange={handleChange} onBlur={handleBlur} />
-                {errors.phone && touched.phone && <p className={`alert alert-danger p-1 fw-1 ${style.alert}`}>{errors.phone}</p>}
+                <input
+                  type="text"
+                  className="form-control"
+                  onChange={handlechange}
+                  name="phone"
+                />
               </div>
             </div>
             <div className={style.input}>
               <div className={style.inpi}>
                 <label htmlFor="">(ثلاثي) الاسم بالكامل</label>
-                <input type="text" className="form-control" name='name' onChange={handleChange} onBlur={handleBlur} />
-                {errors.name && touched.name && <p className={`alert alert-danger p-1 fw-1 ${style.alert}`}>{errors.name}</p>}
-
+                <input
+                  type="text"
+                  className="form-control"
+                  onChange={handlechange}
+                  name="name"
+                />
               </div>
               <div className={style.inpi}>
                 <label htmlFor=""> المحافظة </label>
-                <input type="text" className="form-control" name='government' onChange={handleChange} onBlur={handleBlur} />
-                {errors.government && touched.government && <p className={`alert alert-danger p-1 fw-1 ${style.alert}`}>{errors.government}</p>}
+                <input
+                  type="text"
+                  className="form-control"
+                  onChange={handlechange}
+                  name="government"
+                />
               </div>
             </div>
             <div className={style.input}>
               <div className={style.inpi}>
                 <label htmlFor="">البريد الالكتروني </label>
-                <input type="email" className="form-control" name="email"   onChange={handleChange} onBlur={handleBlur} />
-                {errors.email && touched.email && <p className={`alert alert-danger p-1 fw-1 ${style.alert}`}>{errors.email}</p>}
-
+                <input
+                  type="email"
+                  className="form-control"
+                  onChange={handlechange}
+                  name="email"
+                />
+                {errorBackUser && errorBackUser === "email already exist" && (
+                  <p className={`error`}>هذا الايميل موجود من قبل</p>
+                )}
               </div>
               <div className={style.inpi}>
                 <label htmlFor="">كلمة المرور </label>
-                <input type="password" className="form-control" name="password" onChange={handleChange} onBlur={handleBlur} />
-                {errors.password && touched.password && <p className={`alert alert-danger p-1 fw-1 ${style.alert}`}>{errors.password}</p>}
-
+                <input
+                  type="password"
+                  className="form-control"
+                  name="password"
+                  onChange={handlechange}
+                />
               </div>
             </div>
-            
+
             <div className={style.input}>
-            <div className={style.inpi}>
-                <label htmlFor="">   رمز الدخول (احتفظ به في حالة نسيت كلمة المرور) </label>
-                <input type="text" className="form-control " name="key" onChange={handleChange} onBlur={handleBlur} />
-                {errors.key && touched.key && <p className= {`alert alert-danger p-1 fw-1 ${style.alert}`}>{errors.key}</p>}
+              <div className={style.inpi}>
+                <label htmlFor="">
+                  {" "}
+                  رمز الدخول (احتفظ به في حالة نسيت كلمة المرور){" "}
+                </label>
+                <input
+                  type="text"
+                  className="form-control "
+                  onChange={handlechange}
+                  name="key"
+                />
               </div>
             </div>
 
@@ -142,15 +235,39 @@ export default function RegisterUser() {
                 >
                   ارفع الملف
                 </label>
-                <input type="file" className="form-control" id="file-upload1" onChange={handleChange} />
+                <input
+                  type="file"
+                  className="form-control"
+                  id="file-upload1"
+                  name="selfImg"
+                  onChange={handleChangeImageProfile}
+                />
               </div>
             </div>
-            <div className={style.btnInpu}>
-              {isLoading ? null : <button >انشاء حساب</button>}
-             
-              <button onClick={()=>setOpenAuth('login')}>لدي حساب بالفعل</button>
-              {errorMsg && <div className={`form-control  alert alert-danger m-3 p-1 w-75 text-center ${style.alert}`}>{errorMsg}</div>}
-
+            <div
+              className={style.btnInpu}
+              style={{ display: "flex", flexDirection: "column" }}
+            >
+              <button
+                className="btn btn-primary"
+                style={{ width: "30%", margin: "auto" }}
+                onClick={handleSubmit}
+              >
+                {loading ? (
+                  <div className="spinner-border text-secondary" role="status">
+                    <span className="sr-only"></span>
+                  </div>
+                ) : (
+                  "انشاء حساب"
+                )}
+              </button>
+              <button
+                className="btn"
+                style={{ border: "none", outline: "none" }}
+                onClick={() => setOpenAuth("login")}
+              >
+                لدي حساب بالفعل
+              </button>
             </div>
           </div>
         </form>

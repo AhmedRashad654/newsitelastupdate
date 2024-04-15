@@ -9,62 +9,145 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import DisplayTawsec from "./DisplayTawsec";
+import axios from "axios";
 export default function UsersDash() {
-  const [ userDashboard, setUserDashboard ] = useState( [] );
-  const [ disTawsec, setDisTawsec ] = useState();
-  const { getIdConfideint } = useDashboard()
+  const [userDashboard, setUserDashboard] = useState([]);
+  const [disTawsec, setDisTawsec] = useState();
+  const [imageProfile, setImageProfile] = useState("");
+  const { getIdConfideint } = useDashboard();
+  const [deleted, setDelete] = useState(false);
+  const [idDelete, setIdDelete] = useState();
+  const [idTawsek, setIdTawsek] = useState();
+  const [openTawsek, setOpenTawsk] = useState(false);
+  const [idloading, setIdLoading] = useState(false);
+  const [nofile, setFile] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [report, setReport] = useState([]);
   ////////////////////get all user/////////////////
-    async function getAllUserDashboard() {
-      try {
-        const response = await fetch(
-          "https://syrianrevolution1.com/users/all",
-          {
-            method: "GET",
-            headers: {
-              Authorization:
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoiYWJvN0BnbWFpbDh1LmNvbSIsImlkIjoiNjYxNTNkNzc5ZWVjYjQ1ZDk4Y2U0ZTA2Iiwicm9sZSI6ImFkbWluIn0sImlhdCI6MTcxMjY3NjYwNn0.vAXXi4qnz02UoRAlzqWLSRe27EvCBMgs1kMfKCKaLYk",
-            },
-          }
-        );
-        const result = await response.json();
-        setUserDashboard(result.data);
-      } catch (error) {
-        console.error(error);
-      }
+  async function getAllUserDashboard() {
+    try {
+      const response = await fetch("https://syrianrevolution1.com/users/all", {
+        method: "GET",
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      });
+      const result = await response.json();
+      setUserDashboard(result.data);
+      setReport(result.data);
+    } catch (error) {
+      console.error(error);
     }
+  }
   /////////////get all user ///////////////////////
+  ///////////////////////////
+  function handleChangeImageProfile(e) {
+    setImageProfile(e.target.files[0]);
+  }
   useEffect(() => {
     getAllUserDashboard();
-  }, [] );
-  /////////deleteUser///////////////////
-  async function deleteUser( id ) {
-    try {
-           const response = await fetch(
-             `https://syrianrevolution1.com/users/${id}`,
-             {
-               method: "DELETE",
-               headers: {
-                 Authorization:
-                   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoib29vQGdtYWlsLmNvbSIsImlkIjoiNjYxMjlmYTMyZDM3ZDE1MGM3MWNlMGRjIiwicm9sZSI6InN1cGVydmlzb3IifSwiaWF0IjoxNzEyNDk2NjE3fQ.MS_GWd6WexGSFGN4oWGO1WsnaQRgfC5ww5OkptpkObI",
-               },
-             }
-           );
-        const result = await response.json();
-      if ( result === "User Deleted Successfully" ) {
-        getAllUserDashboard();
-      } else {
-        console.log( result );
-        }
-      } catch (error) {
-        console.error(error);
-      }
+  }, []);
+  ///////////////////////////////////
+  async function handleTawsek(e) {
+    e.preventDefault();
+    if (!imageProfile) {
+      setFile(true);
+      return;
     }
-  
+    setFile(false);
+    const formData = new FormData();
+    formData.append("image", imageProfile);
+    setLoading(true);
+    await axios
+      .patch(`https://syrianrevolution1.com/users/doc/${idTawsek}`, formData, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((result) => {
+        setLoading(false);
+        if (result.data.user._id) {
+          setOpenTawsk("");
+          getAllUserDashboard();
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log(error);
+      });
+  }
+  /////////deleteUser///////////////////
+  async function deleteUser() {
+    try {
+      setIdLoading(true);
+      const response = await fetch(
+        `https://syrianrevolution1.com/users/${idDelete}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      );
+      const result = await response.json();
+      if (result === "User Deleted Successfully") {
+        getAllUserDashboard();
+        setIdLoading(false);
+        setIdDelete("");
+        setDelete("");
+      } else {
+        console.log(result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   const navigate = useNavigate();
+  //////////////search by name//////////////
+  const filter = (event) => {
+    setReport(
+      userDashboard.filter(
+        (f) =>
+          f.name.includes(event.target.value) ||
+          f.phone.includes(event.target.value)
+      )
+    );
+  };
   return (
     <div className={styles.SuperVisor}>
-      <div className={`headDashboard`}>
-        <p>المستخدمون</p>
+      <div className={`headDashboard`} style={{ display: "flex", gap: "10px" }}>
+        <p>المستخدمون/</p>
+        <div>
+          <span
+            className={styles.spanradiues}
+            style={{
+              backgroundColor: "yellow",
+              cursor: "pointer",
+            }}
+          ></span>
+          <small> انتظار </small>
+        </div>
+        <div>
+          <span
+            className={styles.spanradiues}
+            style={{
+              backgroundColor: "red",
+              cursor: "pointer",
+            }}
+          ></span>
+          <small> غير موثق </small>
+        </div>
+        <div>
+          <span
+            className={styles.spanradiues}
+            style={{
+              backgroundColor: "green",
+              cursor: "pointer",
+            }}
+          ></span>
+          <small> موثق </small>
+        </div>
       </div>
       <div className={styles.search}>
         <FontAwesomeIcon icon={faMagnifyingGlass} className={styles.sd} />
@@ -72,6 +155,7 @@ export default function UsersDash() {
           className="form-control"
           placeholder="بحث باستخدام الاسم"
           type="text"
+          onChange={filter}
         />
       </div>
       <div className={styles.allUser}>
@@ -82,13 +166,15 @@ export default function UsersDash() {
                 <th>الاسم</th>
                 <th>رقم الهاتف</th>
                 <th>الدور</th>
+
                 <th>توثيق الحساب</th>
+
                 <th>الحالة</th>
               </tr>
             </thead>
             <tbody>
-              {userDashboard &&
-                userDashboard.map((user, index) => (
+              {report &&
+                report.map((user, index) => (
                   <tr key={index}>
                     <td>{user.name}</td>
                     <td>{user.phone}</td>
@@ -115,7 +201,11 @@ export default function UsersDash() {
                       ) : (
                         <span
                           className={styles.spanradiues}
-                          style={{ backgroundColor: "red" }}
+                          style={{ backgroundColor: "red", cursor: "pointer" }}
+                          onClick={() => {
+                            setOpenTawsk(true);
+                            setIdTawsek(user._id);
+                          }}
                         ></span>
                       )}
                     </td>
@@ -124,13 +214,19 @@ export default function UsersDash() {
                         icon={faTrash}
                         className="bg-danger p-1 text-white"
                         style={{ cursor: "pointer" }}
-                        onClick={() => deleteUser(user._id)}
+                        onClick={() => {
+                          setDelete(true);
+                          setIdDelete(user._id);
+                        }}
                       />
                       <FontAwesomeIcon
                         icon={faPenToSquare}
                         className="bg-primary p-1 text-white"
                         style={{ cursor: "pointer" }}
-                        onClick={ () => { localStorage.setItem( "IdUpdateUser", user._id ); navigate( "/dashboard/updateuser" ) } }
+                        onClick={() => {
+                          localStorage.setItem("IdUpdateUser", user._id);
+                          navigate("/dashboard/updateuser");
+                        }}
                       />
                     </td>
                   </tr>
@@ -150,6 +246,141 @@ export default function UsersDash() {
           setDisTawsec={setDisTawsec}
           getAllUserDashboard={getAllUserDashboard}
         />
+      )}
+      {openTawsek && (
+        <div
+          style={{
+            position: "fixed",
+            width: "100%",
+            height: "100%",
+            backgroundColor: "#00011C80",
+            top: 0,
+            left: 0,
+          }}
+        >
+          <div
+            className="gh"
+            style={{
+              padding: "30px 10px",
+              width: "40%",
+              height: "35%",
+              transform: "translateY(150px)",
+              backgroundColor: "#F7F7F7",
+              borderRadius: "5px",
+              margin: "auto",
+            }}
+          >
+            <p
+              style={{
+                textAlign: "center",
+                fontSize: "15px",
+              }}
+            >
+              ارفع صورة الوثيقة
+            </p>
+            {nofile && (
+              <p
+                className="alert alert-secondary alerthemself"
+                style={{ transform: "translateY(-10px)", width: "100%" }}
+              >
+                يرجي رفع الوثيقة
+              </p>
+            )}
+            <label htmlFor="file-upload2" className={`customfileupload`}>
+              ارفع الملف
+            </label>
+            <input
+              name="selfImg"
+              id="file-upload2"
+              type="file"
+              className="form-control"
+              onChange={handleChangeImageProfile}
+            />
+            <div
+              style={{
+                position: "absolute",
+                bottom: "5%",
+                left: "50%",
+                transform: "translatex(-50%)",
+                display: "flex",
+                gap: "5px",
+              }}
+            >
+              <button className="btn btn-danger" onClick={handleTawsek}>
+                {loading ? (
+                  <div className="spinner-border text-secondary" role="status">
+                    <span className="sr-only"></span>
+                  </div>
+                ) : (
+                  " توثيق"
+                )}
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={() => setOpenTawsk("")}
+              >
+                الغاء
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {deleted && (
+        <div
+          style={{
+            position: "fixed",
+            width: "100%",
+            height: "100%",
+            backgroundColor: "#00011C80",
+            top: 0,
+            left: 0,
+          }}
+        >
+          <div
+            className="gh"
+            style={{
+              width: "40%",
+              height: "45%",
+              transform: "translateY(70px)",
+              backgroundColor: "#F7F7F7",
+              borderRadius: "5px",
+              margin: "auto",
+            }}
+          >
+            <p
+              style={{
+                textAlign: "center",
+                transform: "translatey(50px)",
+                fontSize: "20px",
+              }}
+            >
+              هل انت متاكد من رغبتك <br /> بحذف هذا المستخدم
+            </p>
+            <div
+              style={{
+                position: "absolute",
+                bottom: "5%",
+                left: "50%",
+                transform: "translatex(-50%)",
+                display: "flex",
+                gap: "5px",
+              }}
+            >
+              <button className="btn btn-danger" onClick={deleteUser}>
+                {idloading ? (
+                  <div className="spinner-border text-secondary" role="status">
+                    <span className="sr-only"></span>
+                  </div>
+                ) : (
+                  " حذف"
+                )}
+              </button>
+              <button className="btn btn-primary" onClick={() => setDelete("")}>
+                الغاء
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

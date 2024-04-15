@@ -3,10 +3,11 @@ import styles from "../styleDashboard/RevolutionArchiveDash.module.css";
 import Symbols from './Symbols';
 import Takrem from './Takrem';
 export default function SymbolsoftheRevolution() {
-    const [ choiceArchife, setChoiceArchife ] = useState();
+    const [choiceArchife, setChoiceArchife] = useState("symbol");
     
   return (
     <div>
+ 
       <div className={`headDashboard`}>
         <p>ادخال البيانات / رموز الثورة</p>
       </div>

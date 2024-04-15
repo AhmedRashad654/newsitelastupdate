@@ -1,9 +1,30 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import style from '../styleDashboard/DisplayTawsec.module.css'
-import imgone from '../image/png-clipart-computer-icons-avatar-icon-design-avatar-heroes-computer-wallpaper-thumbnail.png' 
-
+import axios from 'axios';
 export default function DisplayTawsec({ setDisTawsec, getAllUserDashboard }) {
-  const [loading, setLoading] = useState(false);
+  const [ loading, setLoading ] = useState( false );
+  const [ singleUser, setSingleUser ] = useState( [] );
+  
+  useEffect( () => {
+      async function getSingleUser() {
+        try {
+          await axios
+            .get( "https://syrianrevolution1.com/users/all", {
+              headers: {
+                Authorization: localStorage.getItem( 'token' )
+              }
+            })
+            .then( ( result ) => {
+              setSingleUser(result.data.data);
+            })
+            .catch((error) => console.log(error));
+        } catch (error) {
+          console.log(error);
+        }
+    }
+    getSingleUser();
+  },[])
+
   async function acceptedImd() {
     try {
       setLoading(true);
@@ -14,8 +35,7 @@ export default function DisplayTawsec({ setDisTawsec, getAllUserDashboard }) {
         {
           method: "PATCH",
           headers: {
-            Authorization:
-              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoib29vQGdtYWlsLmNvbSIsImlkIjoiNjYxMjlmYTMyZDM3ZDE1MGM3MWNlMGRjIiwicm9sZSI6InN1cGVydmlzb3IifSwiaWF0IjoxNzEyNDk2NjE3fQ.MS_GWd6WexGSFGN4oWGO1WsnaQRgfC5ww5OkptpkObI",
+            Authorization:localStorage.getItem('token')
           },
         }
       );
@@ -30,21 +50,39 @@ export default function DisplayTawsec({ setDisTawsec, getAllUserDashboard }) {
   return (
     <div className={style.colldisplayalert}>
       <div className={style.inlineDisplay}>
-        <img src={imgone} alt="" />
-        <div className={style.bottombuttom}>
-          <button className="btn btn-success" onClick={acceptedImd}>
-            {loading ? (
-              <div className="spinner-border text-secondary" role="status">
-                <span className="sr-only"></span>
-              </div>
+        {singleUser.length !== 0 &&
+          singleUser.map((user) =>
+            user._id === localStorage.getItem("IdConfidentUser") ? (
+              <>
+                <img
+                  src={`https://syrianrevolution1.com/images/${user.docImg}`}
+                  alt="tawsec"
+                />
+                <div className={style.bottombuttom}>
+                  <button className="btn btn-success" onClick={acceptedImd}>
+                    {loading ? (
+                      <div
+                        className="spinner-border text-secondary"
+                        role="status"
+                      >
+                        <span className="sr-only"></span>
+                      </div>
+                    ) : (
+                      "قبول"
+                    )}
+                  </button>
+                  <button
+                    className="btn btn-danger"
+                    onClick={() => setDisTawsec("")}
+                  >
+                    رفض
+                  </button>
+                </div>
+              </>
             ) : (
-              "قبول"
-            )}
-          </button>
-          <button className="btn btn-danger" onClick={() => setDisTawsec("")}>
-            رفض
-          </button>
-        </div>
+              ""
+            )
+          )}
       </div>
     </div>
   );

@@ -1,8 +1,9 @@
 .LeftSideBar {
   width: 20%;
-  height: 850px;
+  height: 1200px;
   background-color: #1e5e8a;
   font-size: 13px;
+  margin-right: 20px;
 }
 
 .LeftSideBar a {

@@ -14,7 +14,7 @@ export default function MartyrsDash() {
     getMartyr()
   }, [] )
   
-  console.log(martyr)
+
   return (
     <div className={style.MartyrsDash}>
       <div className={`headDashboard`}>
@@ -29,21 +29,26 @@ export default function MartyrsDash() {
             </tr>
           </thead>
           <tbody>
-            { martyr.map( ( user ) => (
-              user.category === 'martyr'?     <tr>
-                <td>{user.name} </td>
-                <td>
-                  <button
-                    className={`add `}
-                    style={{ backgroundColor: "#3B9058", color: "white" }}
-                    onClick={ () => { localStorage.setItem( 'idMarter',user._id ); navigate( "/dashboard/displaymartyrs" ) } }
-                  >
-                    عرض
-                  </button>
-                </td>
-              </tr>:''
-         
-            ))}
+            {martyr.map((user, index) =>
+              user.category === "martyr" && user.isAccepted ===false ? (
+                <tr key={index}>
+                  <td>{user.name} </td>
+                  <td>
+                    <button
+                      className={`add `}
+                      style={{ backgroundColor: "#3B9058", color: "white" }}
+                      onClick={() => {
+                        navigate(`/dashboard/martyrs/${user._id}`);
+                      }}
+                    >
+                      عرض
+                    </button>
+                  </td>
+                </tr>
+              ) : (
+                ""
+              )
+            )}
           </tbody>
         </table>
       </div>

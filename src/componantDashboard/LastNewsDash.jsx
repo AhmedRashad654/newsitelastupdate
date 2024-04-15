@@ -58,13 +58,12 @@ export default function Black() {
       try {
         setLoading(true);
         const response = await fetch(
-          "https://syrianrevolution1.com/lists/6616316591e2ce8ae777662a",
+          `https://syrianrevolution1.com/lists/${localStorage.getItem('idUserLogin')}`,
           {
             method: "POST",
             body: formData,
             headers: {
-              Authorization:
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoiYWJvOEBnbWFpbC5jb20iLCJpZCI6IjY2MTYzMTY1OTFlMmNlOGFlNzc3NjYyYSIsInJvbGUiOiJhZG1pbiJ9LCJpYXQiOjE3MTI3MzA0ODd9.cgOZwBwCp8fmXvN8d45wJYV2ayRD_6EG9024mezHAqg",
+              Authorization:localStorage.getItem('token'),
             },
           }
         );
@@ -117,6 +116,8 @@ export default function Black() {
               يرجي رفع الصورة
             </p>
           )}
+
+     
         <div className={styles.input}>
           <div className={styles.inp1}>
             <label htmlFor=""> عنوان الخبر </label>

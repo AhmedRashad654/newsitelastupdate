@@ -1,33 +1,61 @@
-import {React,useContext, useState }from 'react';
-import style from '../RegisterUser/RegisterUser.module.css';
+import { React, useState } from "react";
+import style from "../RegisterUser/RegisterUser.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
-import { ContextUser } from '../../context/Context';
-import { useParams,useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
 export default function UpdatedPassword() {
-    
-    const{id}  =useParams()
-    const [password, setUserPassword]= useState('')
-    const navigate= useNavigate()
-     console.log(password)
+  let { id } = useParams();
+  const [password, setUserPassword] = useState("");
+  const navigate = useNavigate();
 
-    async function updatePassword(e){
-      e.preventDefault()
-      await axios.put(`http://localhost:4500/users/success/${id}`,password).then(()=>{alert('userupdate') ; navigate('/')}).catch((error)=>{alert(error)})
 
-    }
-    console.log(id)
+  const updatePass = async (e) => {
+    e.preventDefault();
+    await axios
+      .patch(`https://syrianrevolution1.com/users/success/${id}`, {
+        password: password,
+      })
+      .then((data) => {
+        console.log(data);
+        if (data.data._id) {
+          navigate("/");
+        }
+      })
+      .catch((error) => {
+        alert(error);
+      });
+  };
+
   return (
     <div className={style.RegisterUser}>
-      <form className={style.formsSuccessRegister}>
-      
+      <form
+        className={style.formsSuccessRegister}
+        onSubmit={(e) => updatePass(e)}
+      >
         <div className={style.informSuccess}>
-          <FontAwesomeIcon icon={faCircleCheck} style={{color:"green",fontSize:'40px',marginBottom:'20px'}}/>
-          
-         <input type="text" name='password' onChange={(e)=>setUserPassword(e.target.value)} />
-         <button type="submit" onClick={(e)=> updatePassword(e)}> submit</button>
+          <FontAwesomeIcon
+            icon={faCircleCheck}
+            style={{ color: "green", fontSize: "40px", marginBottom: "20px" }}
+          />
 
+          <input
+            type="text"
+            name="password"
+            className="form-control"
+            onChange={(e) => setUserPassword(e.target.value)}
+            placeholder="كلمة المرور"
+            minLength={6}
+            required
+          />
+          <button
+            type="submit"
+            className="btn btn-primary"
+            style={{ marginTop: "30px" }}
+          >
+            {" "}
+            submit
+          </button>
         </div>
       </form>
     </div>

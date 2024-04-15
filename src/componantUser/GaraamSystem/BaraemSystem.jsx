@@ -3,23 +3,23 @@ import RegimeMassacres from './RegimeMassacres/RegimeMassacresUser'
 import Martyrs from './Martyrs/MartyrsUser'
 import Missing from './Missing/MissingUser'
 import Detainees from './Detainees/DetaineesUser'
-import SliderGaraemSystem from './SliderGaraemSystem'
+import { Helmet } from 'react-helmet-async'
 export default function BaraemSystem() {
   return (
     <>
-    <div className='container'>
-           <div className="header position-relative py-5">
-            <h3 className=" text-danger"> مجاز النظام</h3>
-          </div>
-         </div>
-    <RegimeMassacres/>
-    <SliderGaraemSystem/>
-    <Martyrs/>
-    <SliderGaraemSystem/>
-    <Missing/>
-    <Detainees/>
-    <SliderGaraemSystem/>
-    
+      <Helmet>
+        <title>  جرائم النظام</title>
+        <meta name="description" content="  جرائم النظام" />
+      </Helmet>
+      <div className="container">
+        <div className="header position-relative py-5">
+          <h3 className=" text-danger"> مجاز النظام</h3>
+        </div>
+      </div>
+      <RegimeMassacres />
+      <Martyrs />
+      <Missing />
+      <Detainees />
     </>
-  )
+  );
 }

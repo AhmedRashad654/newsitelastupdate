@@ -25,7 +25,7 @@ export default function EnterInformUser() {
             color: "red",
             cursor: "pointer",
           }}
-          onClick={()=>setOpenAuth('')}
+          onClick={ () =>setOpenAuth( '' ) }
         />
         <div className={styles.headhere}>
           <h6>ادخال بيانات</h6>
@@ -44,20 +44,20 @@ export default function EnterInformUser() {
               className={choiceArchife === "motaal" ? styles.active : ""}
             >
               معتقل
-            </span>
+           </span>
             <span
               onClick={() => setChoiceArchife("mafkod")}
               className={choiceArchife === "mafkod" ? styles.active : ""}
             >
               مفقود
-            </span>
+            </span>  
             <span
               onClick={() => setChoiceArchife("magrem")}
               className={choiceArchife === "magrem" ? styles.active : ""}
             >
               مجرم حرب
             </span>
-            <span
+           <span
               onClick={() => setChoiceArchife("kaaen")}
               className={choiceArchife === "kaaen" ? styles.active : ""}
             >
@@ -68,15 +68,15 @@ export default function EnterInformUser() {
               className={choiceArchife === "takrem" ? styles.active : ""}
             >
               بطاقات تكريم
-            </span>
+            </span> 
           </div>
         </div>
         {choiceArchife === "martyr" && <AddShahedUser />}
-        {choiceArchife === "motaal" && <AddMoataelUser />}
-        {choiceArchife === "mafkod" && <AddMafquodUser />}
+         {choiceArchife === "motaal" && <AddMoataelUser />}
+       {choiceArchife === "mafkod" && <AddMafquodUser />}
         {choiceArchife === "magrem" && <AddMogramUser />}
         {choiceArchife === "kaaen" && <AddKaaenUser />}
-        {choiceArchife === "takrem" && <AddCreditTakremUser />}
+        {choiceArchife === "takrem" && <AddCreditTakremUser />}    
       </div>
     </div>
   );

@@ -4,7 +4,7 @@
     left: 50%;
     transform: translateX(-50%);
     width: 100%;
-    height: 90%;
+    height: 100%;
     background-color:#00011C80;
     z-index: 5;
 }
@@ -41,11 +41,18 @@
 }
 .formsSuccessRegister{
     width: 30%;
-    height: 40%;
+    min-height: 45%;
     background-color: #F7F7F7;
     margin: auto;
     border-radius: 5px;
     transform: translateY(50%);
+    padding-bottom: 60px;
+}
+@media(max-width:1000px){
+    .formsSuccessRegister{
+        width: 70%;
+    }
+   
 }
 .formsLogin{
     width: 60%;
@@ -91,12 +98,13 @@
     margin: auto;
 }
 .informSuccess{
-    width: 70%;
+    width: 90%;
     margin: auto;
     text-align: center;
     display: flex;
     flex-direction: column;
 transform: translateY(25px);
+
 
 }
 .inform .input{
@@ -122,6 +130,9 @@ transform: translateY(25px);
     margin-bottom: 20px;
 }
 .inpi2 input::placeholder{
+    font-size: 12px;
+}
+.inform input::placeholder{
     font-size: 12px;
 }
 .inpi2 p{

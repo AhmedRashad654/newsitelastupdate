@@ -58,13 +58,12 @@ export default function Black() {
         try {
           setLoading(true);
           const response = await fetch(
-            "https://syrianrevolution1.com/lists/6615a27e9e80b6008bb2f4ed",
+            `https://syrianrevolution1.com/lists/${localStorage.getItem('idUserLogin')}`,
             {
               method: "POST",
               body: formData,
               headers: {
-                Authorization:
-                  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoiYWJvOEBnbWFpbDh1LmNvbSIsImlkIjoiNjYxNWEyN2U5ZTgwYjYwMDhiYjJmNGVkIiwicm9sZSI6ImFkbWluIn0sImlhdCI6MTcxMjY5MzkxM30.gcQwtoAZsuH9gqrmQVCJjLGHD3Yf2ehMpybGDYc7uF4",
+                Authorization:localStorage.getItem('token'),
               
               },
             }

@@ -17,7 +17,6 @@ export default function DetaineesDash() {
       getMartyr();
     }, []);
 
-    console.log(detainees);
   return (
     <div className={style.MartyrsDash}>
       <div className={`headDashboard`}>
@@ -32,17 +31,16 @@ export default function DetaineesDash() {
             </tr>
           </thead>
           <tbody>
-            {detainees.map((user) =>
-              user.category === "detainee" ? (
-                <tr>
+            {detainees.map((user, index) =>
+              user.category === "adetaine" && user.isAccepted === false ? (
+                <tr key={index}>
                   <td>{user.name} </td>
                   <td>
                     <button
                       className={`add `}
                       style={{ backgroundColor: "#3B9058", color: "white" }}
                       onClick={() => {
-                        localStorage.setItem("idMarter", user._id);
-                        navigate("/dashboard/displaydetainess");
+                        navigate(`/dashboard/detaineesdash/${user._id}`);
                       }}
                     >
                       عرض

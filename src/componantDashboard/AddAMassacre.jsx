@@ -65,13 +65,15 @@ setSuccessAdd(false);
       try {
         setLoading(true);
         const response = await fetch(
-          "https://syrianrevolution1.com/massacres/66153d779eecb45d98ce4e06",
+          `https://syrianrevolution1.com/massacres/${localStorage.getItem(
+            "idUserLogin"
+          )}`,
           {
             method: "POST",
             body: formData,
             headers: {
               Authorization:
-                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoiYWJvN0BnbWFpbDh1LmNvbSIsImlkIjoiNjYxNTNkNzc5ZWVjYjQ1ZDk4Y2U0ZTA2Iiwicm9sZSI6ImFkbWluIn0sImlhdCI6MTcxMjY2ODAzOX0.2gsWZzjFCXpETFvEq5wZ81eZ2DGKk9oYgxSjjyYXtxE",
+                localStorage.getItem('token'),
             },
           }
         );
@@ -120,8 +122,7 @@ setSuccessAdd(false);
           </p>
         )}
       {errorBackUser &&
-        errorBackUser?.error ===
-        "Cannot read property 'map' of undefined" && (
+        errorBackUser?.error === "Cannot read property 'map' of undefined" && (
           <p
             className="alert alert-secondary alerthemself"
             style={{ transform: "translateY(0)", width: "100%" }}
@@ -142,7 +143,7 @@ setSuccessAdd(false);
         </div>
         <div className={styles.inp1}>
           <p style={{ fontSize: "10px", marginBottom: "5px" }}>
-            الوثائق والملفات
+            وثيقة او ملف (ملف pdf او word او فيديو mp4 او ملف zip)
           </p>
           <label htmlFor="ui" className="customfileupload">
             {" "}

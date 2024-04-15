@@ -2,7 +2,7 @@
   display: flex;
   background-color: #0d3a5a;
   width: 100%;
-  height: 850px;
+ min-height: 1200px;
 }
 .centerDash {
   position: absolute;

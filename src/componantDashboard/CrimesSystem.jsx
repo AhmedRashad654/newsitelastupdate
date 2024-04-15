@@ -5,7 +5,7 @@ import Addadetainee from './Addadetainee';
 import AddMissing from './AddMissing';
 import AddAMassacre from './AddAMassacre';
 export default function CrimesSystem() {
-    const [ choiceArchife, setChoiceArchife ] = useState();
+    const [choiceArchife, setChoiceArchife] = useState("martyr");
   return (
     <div>
       <div className={`headDashboard`}>

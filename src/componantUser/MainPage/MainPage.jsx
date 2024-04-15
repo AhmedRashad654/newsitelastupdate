@@ -2,7 +2,6 @@ import React from 'react';
 import Liberated from './Liberated/Liberated';
 import FlagsUser from './FlagsUser/FlagsUser';
 import RegimeMassacres from './RegimeMassacres/RegimeMassacresUser';
-import { Link } from 'react-router-dom';
 
 export default function MainPage() {
   return (
@@ -15,9 +14,7 @@ export default function MainPage() {
       <RegimeMassacres />
       <Liberated />
       <div className="container">
-        <Link className=" nav-link d-inline-block" to={'/newsDetails'}>
           <FlagsUser />
-        </Link>
       </div>
     </>
   );

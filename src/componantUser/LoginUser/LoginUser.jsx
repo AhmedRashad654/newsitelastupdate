@@ -5,39 +5,72 @@ import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { ContextUser} from '../../context/Context';
 import axios from 'axios';
 import { jwtDecode } from "jwt-decode";
+import Joi from 'joi';
 export default function LoginUser() {
-
-const { setOpenAuth}= useContext(ContextUser)
-  const [ user, setUser ] = useState()
+  const { setOpenAuth, setRole } = useContext(ContextUser);
+  const [user, setUser] = useState({});
   const [ loading, setLoading ] = useState( false );
-  function handlechange( e ) {
-    setUser( ( prevState ) => ( {
+  const [ errorListUser, setErrorListUser ] = useState( null );
+  const [ back, setBack ] = useState( false );
+  function handlechange(e) {
+    setUser((prevState) => ({
       ...prevState,
-      [ e.target.name ]: e.target.value,
-    } ) );
+      [e.target.name]: e.target.value,
+    }));
   }
-  async function handlesubmit( e ) {
-    e.preventDefault();
-    setLoading( true );
-    await axios.post(
-      "https://syrianrevolution1.com/users/login"
-      , user ).then( ( result ) => {
-        if ( result.data.message === "success" ) {
-          setLoading( false );
-          const decodedToken = jwtDecode(result.data.token);
-          localStorage.setItem( 'token', result.data.token )
-          localStorage.setItem( 'idUserLogin', decodedToken.data.id )
-          localStorage.setItem("roleUserLogin", decodedToken.data.role);
-          
-          console.log( decodedToken );
-          setOpenAuth( '' );
-        }
-      } ).catch( ( error ) => {
 
-        console.log( error )
-        setLoading( false );
-      } );
-  
+  ////////////valid Joi///////////////
+  function validationAddUser() {
+    let schema = Joi.object({
+      email: Joi.string()
+        .email({ tlds: ["com", "not", "org"] })
+        .required()
+        .messages({
+          "string.empty": "الايميل  مطلوب",
+          "string.email": "الايميل غير صالح",
+          "any.required": " الايميل مطلوب",
+        }),
+      password: Joi.string().required().messages({
+        "string.empty": "  كلمة المرور مطلوبة",
+        "any.required": "  كلمة المرور مطلوبة",
+      }),
+    });
+    return schema.validate(user, { abortEarly: false });
+  }
+  async function handlesubmit(e) {
+    e.preventDefault();
+    let validate = validationAddUser()
+    if ( validate.error ) {
+        setErrorListUser([validate.error.details]);
+    } else {
+      setLoading( true );
+      setErrorListUser('')
+          await axios
+            .post("https://syrianrevolution1.com/users/login", user)
+            .then((result) => {
+              console.log(result);
+              if (result.data.message === "success") {
+                const decodedToken = jwtDecode(result.data.token);
+                localStorage.setItem("token", result.data.token);
+                localStorage.setItem("idUserLogin", decodedToken.data.id);
+                localStorage.setItem("roleUserLogin", decodedToken.data.role);
+                localStorage.setItem("selfImg", result?.data?.user?.selfImg);
+                setRole( localStorage.getItem( "roleUserLogin" ) );
+                  setOpenAuth("");
+              }
+            })
+            .catch((error) => {
+              setLoading(false);
+              console.log(error);
+              if (
+                error?.response?.data?.msg === "Invalid Password" ||
+                error?.response?.data?.msg === "invalid email"
+              ) {
+                setBack(true);
+              }
+            });
+    }
+
   }
   return (
     <div className={style.RegisterUser}>
@@ -60,11 +93,29 @@ const { setOpenAuth}= useContext(ContextUser)
 
           <hr />
         </div>
+        {errorListUser &&
+          errorListUser.map((error, index) => (
+            <p
+              key={index}
+              className="alert alert-secondary alerthemself"
+              style={{ width: "90%", marginBottom: "20px" }}
+            >
+              {error[index].message}
+            </p>
+          ))}
+        {back && (
+          <p
+            className="alert alert-secondary alerthemself"
+            style={{ width: "90%", marginBottom: "20px" }}
+          >
+          البيانات غير صحيحة
+          </p>
+        )}
         <div className={style.inform}>
           <div className={style.inpi2}>
             <label htmlFor=""> البريد الالكتروني </label>
             <input
-              type="text"
+              type="email"
               className="form-control"
               name="email"
               onChange={handlechange}
@@ -75,7 +126,7 @@ const { setOpenAuth}= useContext(ContextUser)
           <div className={style.inpi2}>
             <label htmlFor=""> كلمة المرور </label>
             <input
-              type="text"
+              type="password"
               className="form-control"
               name="password"
               onChange={handlechange}
@@ -97,7 +148,7 @@ const { setOpenAuth}= useContext(ContextUser)
                   <span className="sr-only"></span>
                 </div>
               ) : (
-              "تسجيل الدخول"
+                "تسجيل الدخول"
               )}
             </button>
             <button onClick={(e) => e.preventDefault()}>

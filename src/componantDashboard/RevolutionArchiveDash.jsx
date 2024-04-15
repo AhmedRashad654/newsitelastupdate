@@ -4,7 +4,7 @@ import styles from '../styleDashboard/RevolutionArchiveDash.module.css'
 import Mozaharat from '../Mozaharat';
 import Maarek from './Maarek';
 export default function RevolutionArchiveDash() {
-    const [ choiceArchife, setChoiceArchife ] = useState();
+    const [choiceArchife, setChoiceArchife] = useState("mozaharat");
   return (
     <div>
       <div className={`headDashboard`}>

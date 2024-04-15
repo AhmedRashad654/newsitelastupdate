@@ -4,9 +4,9 @@ const ContextUser = createContext();
 
 function ContextProvider({ children }) {
   const [openAuth, setOpenAuth] = useState();
-
+ const [role, setRole] = useState(localStorage.getItem("roleUserLogin"));
   return (
-    <ContextUser.Provider value={{openAuth ,setOpenAuth,}}>
+    <ContextUser.Provider value={{ openAuth, setOpenAuth,role,setRole }}>
       {children}
     </ContextUser.Provider>
   );

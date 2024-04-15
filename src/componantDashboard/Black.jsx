@@ -5,7 +5,7 @@ import Joi from 'joi';
 export default function Black() {
   const navigate = useNavigate();
     const [addData, setAddData] = useState({
-      category: "blacklist",
+      category: "mogramharb",
     });
     const [errorListUser, setErrorListUser] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -58,21 +58,17 @@ console.log(imageProfile)
         try {
           setLoading(true);
           const response = await fetch(
-            "https://syrianrevolution1.com/lists/6615a27e9e80b6008bb2f4ed",
+            `https://syrianrevolution1.com/lists/${localStorage.getItem('idUserLogin')}`,
             {
               method: "POST",
               body: formData,
               headers: {
-                Authorization:
-                  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoiYWJvOEBnbWFpbDh1LmNvbSIsImlkIjoiNjYxNWEyN2U5ZTgwYjYwMDhiYjJmNGVkIiwicm9sZSI6ImFkbWluIn0sImlhdCI6MTcxMjY5MzkxM30.gcQwtoAZsuH9gqrmQVCJjLGHD3Yf2ehMpybGDYc7uF4",
+                Authorization:localStorage.getItem('token'),
               
               },
             }
           );
           const result = await response.json();
-          // const reponse = await axios.post(
-          //   "https://syrianrevolution1.com/lists/6615a27e9e80b6008bb2f4ed"
-          // ,formData,);
           console.log(result);
           setLoading(false);
           if (result._id) {
@@ -239,9 +235,3 @@ console.log(imageProfile)
 
 
 
-//   return (
-//     <div className={styles.informLastNews}>
-//       {/* بقية الكود هنا */}
-//     </div>
-//   );
-// }

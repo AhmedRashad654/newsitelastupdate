@@ -42,7 +42,8 @@
 }
 @media (max-width: 800px) {
   .perantparhead {
-    width: 90%;
+    width: 100%;
+
   }
 }
 .head-img {

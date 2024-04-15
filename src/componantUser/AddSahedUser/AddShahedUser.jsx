@@ -1,12 +1,158 @@
-import {React,useContext} from 'react';
+import {React,useContext, useState} from 'react';
 import styles from './AddShahed.module.css';
 import { ContextUser } from '../../context/Context';
+import Joi from 'joi';
 export default function AddShahedUser() {
+  const { setOpenAuth } = useContext( ContextUser )
+  ///////////////////////////////////////////////////
+    ///////////////handlechange//////////////
+    const [addData, setAddData] = useState({
+      category: "martyr",
+      responsibleAuthority: "system",
+    });
+    const [errorListUser, setErrorListUser] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [errorBackUser, setErrorBackUser] = useState(null);
+    const [successAdd, setSuccessAdd] = useState(false);
+    /////////handle image////////////////
+    const [imageProfile, setImageProfile] = useState("");
+    function handleChangeImageProfile(e) {
+      setImageProfile(e.target.files[0]);
+    }
+    ////////////handle documents///////////
+    const [document, setDocument] = useState("");
+    function handleChangeDocuments(e) {
+      setDocument(e.target.files[0]);
+    }
+    //////////handle change //////////////
+    function handlechange(e) {
+      setAddData((prevState) => ({
+        ...prevState,
+        [e.target.name]: e.target.value,
+      }));
+    }
+    ////////////valid Joi///////////////
+    function validationAddUser() {
+      let schema = Joi.object({
+        category: Joi.string().required().messages({
+          "string.empty": "التصنيف  مطلوب",
+          "any.required": "التصنيف  مطلوب",
+        }),
+        name: Joi.string().required().messages({
+          "string.empty": "     اسم الشهيد مطلوب",
+          "any.required": "     اسم الشهيد مطلوب",
+        }),
+        documents: Joi.string().allow(""),
+        nickname: Joi.string().allow(""),
+        dateOfBirth: Joi.string().allow(""),
+        responsibleAuthority: Joi.string().required().messages({
+          "string.empty": "  الجهة المسئولة مطلوبة",
+          "any.required": "  الجهة المسئولة مطلوبة",
+        }),
+        governorate: Joi.string().allow(""),
+        fatherName: Joi.string().allow(""),
+        motherName: Joi.string().allow(""),
+        place: Joi.string().allow(""),
 
-  const {openAuth, setOpenAuth}= useContext(ContextUser)
+        externalLinks: Joi.string().allow(""),
+        details: Joi.string().allow(""),
+      });
+      return schema.validate(addData, { abortEarly: false });
+    }
+
+    async function handleSubmit(e) {
+      e.preventDefault();
+      let responseValidateUser = validationAddUser();
+      if (responseValidateUser.error) {
+        setErrorListUser([responseValidateUser.error.details]);
+      } else {
+        setErrorListUser("");
+        setSuccessAdd(false);
+        const formData = new FormData();
+        formData.append("category", addData.category);
+        formData.append("name", addData.name);
+        formData.append("profileImage", imageProfile);
+        formData.append("documents", document);
+        formData.append("nickname", addData.nickname);
+        formData.append("dateOfBirth", addData.dateOfBirth);
+        formData.append("responsibleAuthority", addData.responsibleAuthority);
+        formData.append("governorate", addData.governorate);
+        formData.append("fatherName", addData.fatherName);
+        formData.append("motherName", addData.motherName);
+        formData.append("place", addData.place);
+        formData.append("externalLinks", addData.externalLinks);
+        formData.append("details", addData.details);
+        try {
+          setLoading(true);
+          const response = await fetch(
+            `https://syrianrevolution1.com/childData/${localStorage.getItem(
+              "idUserLogin"
+            )}`,
+            {
+              method: "POST",
+              body: formData,
+              headers: {
+                Authorization: localStorage.getItem("token"),
+              },
+            }
+          );
+          const result = await response.json();
+          console.log(result);
+          setLoading(false);
+          if (result._id) {
+            setSuccessAdd(true);
+            setErrorBackUser(null);
+            setErrorListUser(null);
+          } else {
+            setErrorBackUser(result);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }
   return (
     <div>
       <form action="" className={styles.form}>
+        {errorListUser &&
+          errorListUser.map((error, index) => (
+            <p
+              key={index}
+              className="alert alert-secondary alerthemself"
+              style={{ width: "90%" }}
+            >
+              {error[index].message}
+            </p>
+          ))}
+        {errorBackUser &&
+          errorBackUser?.error === "Cannot read property '0' of undefined" && (
+            <p
+              className="alert alert-secondary alerthemself"
+              style={{ width: "90%" }}
+            >
+              يرجي رفع صورة للشهيد او صورة تدل علي الحدث
+            </p>
+          )}
+        {errorBackUser &&
+          errorBackUser?.error.includes("ChildData validation failed") && (
+            <p
+              className="alert alert-secondary alerthemself"
+              style={{ width: "90%" }}
+            >
+              التاريخ غير صالح
+            </p>
+          )}
+        {errorBackUser &&
+          errorBackUser?.error ===
+            "Cannot read property 'map' of undefined" && (
+            <p
+              className="alert alert-secondary alerthemself"
+              style={{ width: "90%" }}
+            >
+              يرجي رفع وثيقة تثبت الحدث
+            </p>
+          )}
+        {successAdd && setOpenAuth("successaddinform")}
         <div className={styles.headForm}>
           <div className={styles.input}>
             <div className={styles.inp1}>
@@ -15,14 +161,18 @@ export default function AddShahedUser() {
                 type="text"
                 placeholder="اسم الشهيد"
                 className="form-control"
+                name="name"
+                onChange={handlechange}
               />
             </div>
             <div className={styles.inp1}>
               <label htmlFor=""> اسم الاب</label>
               <input
+                name="fatherName"
                 type="text"
                 placeholder="  اسم الاب"
                 className="form-control"
+                onChange={handlechange}
               />
             </div>
           </div>
@@ -33,6 +183,8 @@ export default function AddShahedUser() {
                 type="text"
                 placeholder=" كنية الشهيد"
                 className="form-control"
+                name="nickname"
+                onChange={handlechange}
               />
             </div>
             <div className={styles.inp1}>
@@ -41,6 +193,8 @@ export default function AddShahedUser() {
                 type="text"
                 placeholder=" اسم الام "
                 className="form-control"
+                name="motherName"
+                onChange={handlechange}
               />
             </div>
           </div>
@@ -51,38 +205,97 @@ export default function AddShahedUser() {
                 type="date"
                 placeholder="  المواليد"
                 className="form-control"
+                name="dateOfBirth"
+                onChange={handlechange}
               />
             </div>
             <div className={styles.inp1}>
               <label htmlFor=""> مكان الخدث </label>
-              <select name="" id="" className="form-control">
-                <option value="">one</option>
-                <option value="">two</option>
-
-                <option value="">three</option>
-              </select>
+              <input
+                type="text"
+                placeholder="  مكان الحدث"
+                className="form-control"
+                name="place"
+                onChange={handlechange}
+              />
             </div>
           </div>
           <div className={styles.input}>
             <div className={styles.inp1}>
               <label htmlFor=""> الجهة المسؤولة</label>
-              <select name="" id="" className="form-control">
-                <option value="">النظام</option>
-                <option value="">داعش</option>
-                <option value="">قسد</option>
+              <select
+                name="responsibleAuthority"
+                id=""
+                className="form-control"
+                onChange={handlechange}
+              >
+                <option value="system">النظام</option>
+                <option value="daaeh">داعش</option>
+                <option value="qasad">قسد</option>
               </select>
             </div>
-                      <div className={ styles.inp1 }>
-                          <p style={{marginBottom:'5px',fontSize:'12px'}}>الوثائق والملفات</p>
+            <div className={styles.inp1}>
+              <p style={{ marginBottom: "5px", fontSize: "12px" }}>
+                وثيقة او ملف (ملف pdf او word او فيديو mp4 او ملف zip)
+              </p>
               <label htmlFor="file-upload" className={styles.customfileupload}>
                 اختيار الملف
               </label>
-              <input type="file" id="file-upload" />
+              <input
+                type="file"
+                id="file-upload"
+                onChange={handleChangeDocuments}
+                multiple
+                name="documents"
+              />
+            </div>
+          </div>
+          <div className={styles.input}>
+            <div className={styles.inp1}>
+              <label htmlFor=""> المحافظة</label>
+              <input
+                type="text"
+                placeholder="  المحافظة"
+                className="form-control"
+                name="governorate"
+                onChange={handlechange}
+              />
+            </div>
+            <div className={styles.inp1}>
+              <label htmlFor=""> رابط خارجي </label>
+              <input
+                type="text"
+                placeholder="   روابط خارجية"
+                className="form-control"
+                name="externalLinks"
+                onChange={handlechange}
+              />
+            </div>
+          </div>
+          <div className={styles.input}>
+            <div className={styles.inp1}>
+              <p style={{ marginBottom: "5px", fontSize: "12px" }}>
+                صورة (اجباري)
+              </p>
+              <label htmlFor="file-upload1" className={styles.customfileupload}>
+                اختيار الصورة
+              </label>
+              <input
+                type="file"
+                id="file-upload1"
+                onChange={handleChangeImageProfile}
+                name="profileImage"
+              />
             </div>
           </div>
           <div className={styles.input1}>
             <label htmlFor="">شرح مفصل</label>
-            <textarea name="" id="" className="form-control"></textarea>
+            <textarea
+              name="details"
+              id=""
+              onChange={handlechange}
+              className="form-control"
+            ></textarea>
           </div>
         </div>
       </form>
@@ -90,9 +303,15 @@ export default function AddShahedUser() {
         <button
           className={`add`}
           style={{ color: "white", backgroundColor: "green" }}
-           onClick={()=>setOpenAuth('successaddinform')}
+          onClick={handleSubmit}
         >
-          اضافة بيانات
+          {loading ? (
+            <div className="spinner-border text-secondary" role="status">
+              <span className="sr-only"></span>
+            </div>
+          ) : (
+            "    اضافة بيانات"
+          )}
         </button>
       </div>
     </div>

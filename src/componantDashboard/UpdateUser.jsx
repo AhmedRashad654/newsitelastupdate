@@ -26,12 +26,11 @@ export default function UpdateUser() {
         let schema = Joi.object({
           name: Joi.string().allow(""),
           selfImg: Joi.string().allow(""),
-     
-       
-          government: Joi.string().allow( "" ),
+          role: Joi.string().allow(""),
+          government: Joi.string().allow(""),
           phone: Joi.string().min(10).allow("").messages({
             "string.min": "    رقم  الهاتف يجب الا يقل عن عشرة ارقام",
-          }),     
+          }),
         });
         return schema.validate(userUpdate, { abortEarly: false });
       }
@@ -42,13 +41,30 @@ export default function UpdateUser() {
         let responseValidateUser = validationAddUser();
         if (responseValidateUser.error) {
           setErrorListUpdate([responseValidateUser.error.details]);
-        } else if(userUpdate?.name || userUpdate?.phone || userUpdate?.government || imageProfile !==""){
+        } else{
           setErrorListUpdate(null);
           const formData = new FormData();
-          formData.append("name", userUpdate.name);
-          formData.append("photo", imageProfile);
-          formData.append("government", userUpdate.government);
-          formData.append("phone", userUpdate.phone);
+          if ( userUpdate.name !== "" && userUpdate.name !== undefined && userUpdate.name !== null ) {
+            formData.append("name", userUpdate.name);
+          }
+           if (userUpdate.phone !== "" && userUpdate.phone !== undefined && userUpdate.phone !== null) {
+             formData.append("phone", userUpdate.phone);
+           }
+            if (userUpdate.government !== "" && userUpdate.government !== undefined && userUpdate.government !== null) {
+              formData.append("government", userUpdate.government);
+          }
+                  if (
+                    userUpdate.role !== "" &&
+                    userUpdate.role !== undefined &&
+                    userUpdate.role !== null
+                  ) {
+                    formData.append("role", userUpdate.role);
+                  }
+          if (imageProfile !== null && imageProfile !== undefined && imageProfile !== "") {
+            formData.append("photo", imageProfile);
+          }
+          
+         
           try {
             setLoading(true);
             const response = await fetch(
@@ -58,8 +74,7 @@ export default function UpdateUser() {
               {
                 method: "PATCH",
                 headers: {
-                  Authorization:
-                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImVtYWlsIjoib29vQGdtYWlsLmNvbSIsImlkIjoiNjYxMjlmYTMyZDM3ZDE1MGM3MWNlMGRjIiwicm9sZSI6InN1cGVydmlzb3IifSwiaWF0IjoxNzEyNDk2NjE3fQ.MS_GWd6WexGSFGN4oWGO1WsnaQRgfC5ww5OkptpkObI",
+                  Authorization: localStorage.getItem("token"),
                 },
                 body: formData,
               }
@@ -115,12 +130,21 @@ export default function UpdateUser() {
             <div className={styles.inp1}>
               <label htmlFor=""> المحافظة</label>
               <input
-                name="goverment"
+                name="government"
                 type="text"
                 placeholder=" المحافظة "
                 className="form-control"
                 onChange={handlechange}
               />
+            </div>
+            <div className={styles.inp1}>
+              <label htmlFor=""> الدور</label>
+              <select name="role" onChange={handlechange}>
+                <option value="">اختر الدور</option>
+                <option value="admin">ادمن</option>
+                <option value="supervisor">مشرف</option>
+                <option value="user">مستخدم</option>
+              </select>
             </div>
           </div>
           <div className={styles.input}>

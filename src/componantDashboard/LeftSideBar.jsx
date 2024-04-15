@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import style from '../styleDashboard/leftSideBar.module.css';
 import imgAvatar from '../image/png-clipart-computer-icons-avatar-icon-design-avatar-heroes-computer-wallpaper-thumbnail.png';
 import { Link, NavLink } from 'react-router-dom';
@@ -10,8 +10,10 @@ import {
   faReceipt,
   faUserGroup,
 } from '@fortawesome/free-solid-svg-icons';
+import { ContextUser } from '../context/Context';
 export default function LeftSideBar() {
-  const [isMobile, setIsMobile] = useState(false);
+  const [ isMobile, setIsMobile ] = useState( false );
+   const { role } = useContext(ContextUser);
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 950);
@@ -22,7 +24,12 @@ export default function LeftSideBar() {
     window.addEventListener('resize', handleResize);
 
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [] );
+  
+  //////////////function logout//////////////
+  function handleLogout() {
+    localStorage.clear();
+  }
   return (
     <div className={style.LeftSideBar}>
       <div className={style.first}>
@@ -30,12 +37,17 @@ export default function LeftSideBar() {
         <p>admin</p>
       </div>
       <div className={style.second}>
-        <div className={style.secondFirst}>
-          <NavLink to="/dashboard/userdash">
-            <FontAwesomeIcon icon={faUserGroup} />
-            {!isMobile ? <p>المستخدمون</p> : ""}
-          </NavLink>
-        </div>
+        {role === "admin" ? (
+          <div className={style.secondFirst}>
+            <NavLink to="/dashboard/userdash">
+              <FontAwesomeIcon icon={faUserGroup} />
+              {!isMobile ? <p>المستخدمون</p> : ""}
+            </NavLink>
+          </div>
+        ) : (
+          ""
+        )}
+
         <div className={style.secondsecond}>
           <div className={style.headsecondsecond}>
             <Link>
@@ -57,7 +69,7 @@ export default function LeftSideBar() {
             </NavLink>
             <NavLink to="/dashboard/warcriminals">
               {" "}
-              {isMobile ? "مح" : "مجرمين حرب"}
+              {isMobile ? "مج" : "  مجرمين حرب"}
             </NavLink>
             <NavLink to="/dashboard/traitors">
               {isMobile ? "خ" : "خونة"}
@@ -95,30 +107,27 @@ export default function LeftSideBar() {
               {" "}
               {isMobile ? "جر" : "جرائم النظام"}{" "}
             </NavLink>
+            <NavLink to="/dashboard/excel">
+              {" "}
+              {isMobile ? "مطل " : " مطلوبين للنظام"}{" "}
+            </NavLink>
           </div>
         </div>
-        <div className={style.secondFourth}>
-          {/* <div className={style.headsecondsecond}>
-            <NavLink to="/dashboard/userdash">
-              <FontAwesomeIcon icon={faUserGroup} />
-              {!isMobile ? <p> المستخدمين</p> : ""}
-            </NavLink>
-          </div> */}
-        </div>
+        <div className={style.secondFourth}></div>
         <div className={style.secondFourth}>
           <div className={style.headsecondsecond}>
-            <Link>
+            <NavLink to="/dashboard/dataDisplaySite">
               <FontAwesomeIcon icon={faReceipt} />
               {!isMobile ? <p> البيانات المعروضة بالموقع</p> : ""}
-            </Link>
+            </NavLink>
           </div>
         </div>
         <div className={style.secondFourth}>
           <div className={style.headsecondsecond}>
-            <NavLink to="/">
+            <Link to="/" onClick={handleLogout}>
               <FontAwesomeIcon icon={faArrowRightFromBracket} />
               {!isMobile ? <p> تسجيل الخروج</p> : ""}
-            </NavLink>
+            </Link>
           </div>
         </div>
       </div>

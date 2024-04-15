@@ -1,8 +1,10 @@
-import React from 'react';
+import React, {useContext } from 'react';
 import './Navbar.css';
 import { NavLink } from 'react-router-dom';
-
+import { ContextUser } from '../../context/Context';
 export default function Navbar() {
+
+   const { role } = useContext(ContextUser);
   return (
     <nav className="navbar navbar-expand-lg">
       <div className="container">
@@ -23,25 +25,21 @@ export default function Navbar() {
               <NavLink
                 className={`nav-link border-bottom border-black ${({
                   isActive,
-                }) => (isActive ? 'active' : '')}`}
+                }) => (isActive ? "active" : "")}`}
                 aria-current="page"
                 to="/"
               >
                 الرئيسية
               </NavLink>
             </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" aria-current="page" to="/">
-                أخر الأخبار
-              </NavLink>
-            </li>
+
             <li className="nav-item">
               <NavLink
                 className="nav-link position-relative evolution-archive "
                 aria-current="page"
                 to="/archiefthoura"
               >
-                أرشيف الثورة{' '}
+                أرشيف الثورة{" "}
                 <i className="fa-solid fa-greater-than text-muted"></i>
                 <div className="evolution-archive-hover">
                   <NavLink className="nav-link text-white">المظاهرات</NavLink>
@@ -60,11 +58,11 @@ export default function Navbar() {
                 className="nav-link position-relative evolution-archive"
                 aria-current="page"
               >
-                رموز الثورة{' '}
+                رموز الثورة{" "}
                 <i className="fa-solid fa-greater-than text-muted"></i>
                 <div className="evolution-archive-hover">
                   <NavLink className="nav-link text-white">رموز الثورة</NavLink>
-                  <NavLink to={'horonCard'} className="nav-link text-white">
+                  <NavLink to={"horonCard"} className="nav-link text-white">
                     بطاقة التكريم
                   </NavLink>
                 </div>
@@ -76,13 +74,13 @@ export default function Navbar() {
                 aria-current="page"
                 to="/blacklistuser"
               >
-                القائمة السوداء{' '}
+                القائمة السوداء{" "}
                 <i className="fa-solid fa-greater-than text-muted"></i>
                 <div className="evolution-archive-hover">
-                  <NavLink className="nav-link text-white">
-                    القائمة السوداء
-                  </NavLink>
                   <NavLink className="nav-link text-white">الخونة</NavLink>
+                  <NavLink className="nav-link text-white">
+                    مجرمين الحرب
+                  </NavLink>
                 </div>
               </NavLink>
             </li>
@@ -92,11 +90,11 @@ export default function Navbar() {
                 aria-current="page"
                 to="/graamsystem"
               >
-                جرائم النظام{' '}
+                جرائم النظام{" "}
                 <i className="fa-solid fa-greater-than text-muted"></i>
                 <div className="evolution-archive-hover">
                   <NavLink className="nav-link text-white">
-                    مجاز النظام{' '}
+                    مجاز النظام{" "}
                   </NavLink>
                   <NavLink className="nav-link text-white">الشهداء</NavLink>
                   <NavLink className="nav-link text-white">المفقودين</NavLink>
@@ -110,7 +108,7 @@ export default function Navbar() {
                 aria-current="page"
                 to="/graemqasad"
               >
-                جرائم قسد{' '}
+                جرائم قسد{" "}
                 <i className="fa-solid fa-greater-than text-muted"></i>
                 <div className="evolution-archive-hover">
                   <NavLink className="nav-link text-white">مجاز قسد </NavLink>
@@ -126,7 +124,7 @@ export default function Navbar() {
                 aria-current="page"
                 to="/graemdashuser"
               >
-                جرائم داعش{' '}
+                جرائم داعش{" "}
                 <i className="fa-solid fa-greater-than text-muted"></i>
                 <div className="evolution-archive-hover">
                   <NavLink className="nav-link text-white">مجاز داعش </NavLink>
@@ -136,14 +134,26 @@ export default function Navbar() {
                 </div>
               </NavLink>
             </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" aria-current="page" to="/WantedToSystem">
-              المطلوبين للنظام             
-               </NavLink>
-            </li>
+            {role === "admin" || role === "supervisor" ? (
+              <li className="nav-item">
+                <NavLink
+                  className="nav-link"
+                  aria-current="page"
+                  to="/dashboard/userdash"
+                >
+                  صفحة الادمن
+                </NavLink>
+              </li>
+            ) : (
+              ""
+            )}
           </ul>
         </div>
       </div>
     </nav>
   );
 }
+
+
+
+

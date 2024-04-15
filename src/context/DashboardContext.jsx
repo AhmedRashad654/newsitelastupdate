@@ -3,10 +3,12 @@ import { createContext, useContext} from "react";
 const ContextDashboard = createContext();
 
 function ContextDashboardProvider({ children }) {
-  
+  function getIdConfideint(id) {
+    localStorage.setItem("IdConfidentUser", id);
+  }
 
   return (
-    <ContextDashboard.Provider value={{ }}>
+    <ContextDashboard.Provider value={{ getIdConfideint }}>
       {children}
     </ContextDashboard.Provider>
   );

@@ -1,33 +1,74 @@
-import {React,useContext, useState} from "react";
+import { React, useContext, useState } from "react";
 import style from "../RegisterUser/RegisterUser.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { ContextUser } from "../../context/Context";
 import axios from "axios";
-import { Navigate, useNavigate } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom";
+import Joi from "joi";
 export default function ForgetPassword() {
-
-  const {openAuth, setOpenAuth}= useContext(ContextUser)
-  const [email, setUserEmail] = useState('')
-  const [key, setUserKey] = useState('')
-   const navigate= useNavigate()
-  const [success, setSuccess]= useState({})
-
- async function forgetPassword(e){
-  e.preventDefault()
-   await axios.post('http://localhost:4500/users/forgetPassword',{
-        email,key
-      }).then((data)=>{
-        navigate(`/success/${data.data._id}`)
-        console.log(data)
-      }).catch((data)=>console.log(data))
+  const { setOpenAuth } = useContext(ContextUser);
+ const [errorListUser, setErrorListUser] = useState(null);
+  const [ forget, setForget ] = useState( {} )
+  const [ loading, setLoading ] = useState( false );
+  const [errorBack,setErrorBack] = useState(false)
+  const navigate = useNavigate();
+  //////////////////////
+   function handlechange(e) {
+     setForget((prevState) => ({
+       ...prevState,
+       [e.target.name]: e.target.value,
+     }));
+  }
+  console.log( forget );
+  ////////////valid Joi///////////////
+  function validationAddUser() {
+    let schema = Joi.object({
+      email: Joi.string()
+        .required()
+        .messages({
+          "string.empty": "الايميل  مطلوب",
+          "any.required": " الايميل مطلوب",
+        }),
+      key: Joi.string().required().messages({
+        "string.empty": "    رمز الدخول مطلوب",
+        "any.required": "    رمز الدخول مطلوب",
+      }),
+    });
+    return schema.validate(forget,{ abortEarly: false });
+  }
+  async function forgetPassword(e) {
+    e.preventDefault();
+    setErrorListUser( '' )
+    setErrorBack( false );
+    let validate = validationAddUser();
+    if ( validate.error ) {
+         setErrorListUser([validate.error.details]);
+    } else {
+      setLoading( true );
+          await axios
+            .post("https://syrianrevolution1.com/users/forgetPassword", 
+              forget,
+            )
+            .then((data) => {
+              console.log(data);
+              if (data.data.success) {
+                navigate( `/success/${data.data.userId}` );
+                setOpenAuth('')
+                setLoading(false)
+              } else if (data?.data?.message === "email not found") {
+                setLoading( false );
+                setErrorBack(true)
+              }
+            })
+            .catch((data) => console.log(data));
     }
 
-  
+  }
+
   return (
     <div className={style.RegisterUser}>
-      <form className={style.formsForget} >
+      <form className={style.formsForget}>
         <FontAwesomeIcon
           icon={faCircleXmark}
           style={{
@@ -36,7 +77,7 @@ export default function ForgetPassword() {
             color: "red",
             cursor: "pointer",
           }}
-          onClick={()=> setOpenAuth('')}
+          onClick={() => setOpenAuth("")}
         />
         <div
           className={style.headForm}
@@ -47,37 +88,64 @@ export default function ForgetPassword() {
           <hr />
         </div>
         <div className={style.inform1}>
+          {errorListUser &&
+            errorListUser.map((error, index) => (
+              <p
+                key={index}
+                className="alert alert-secondary alerthemself"
+                style={{ width: "100%", marginBottom: "50px" }}
+              >
+                {error[index].message}
+              </p>
+            ))}
+          {errorBack && (
+            <p
+         
+              className="alert alert-secondary alerthemself"
+              style={{ width: "100%", marginBottom: "50px" }}
+            >
+            البيانات غير صحيحة
+            </p>
+          )}
           <div className={style.inpi2}>
-            <label htmlFor="">ادخل الايميل   </label>
+            <label htmlFor="">ادخل الايميل </label>
             <input
               type="text"
               name="email"
-              onChange={(e)=>setUserEmail(e.target.value)}
+              onChange={handlechange}
               className="form-control"
               placeholder="   الايميل"
             />
           </div>
           <div className={style.inpi2}>
-            <label htmlFor="">ادخل رمز الدخول  </label>
+            <label htmlFor="">ادخل رمز الدخول </label>
             <input
               type="text"
               name="key"
-              onChange={(e)=>setUserKey(e.target.value)}
+              onChange={handlechange}
               className="form-control"
               placeholder="  رمز الدخول"
             />
           </div>
-          
           <div className={style.btnInpu1}>
-            <button onClick={(e)=>forgetPassword(e)} type="submit">   تعيين كلمة المرور </button>
+            <button onClick={(e) => forgetPassword(e)} type="submit">
+              {" "}
+              {loading ? (
+                <div className="spinner-border text-secondary" role="status">
+                  <span className="sr-only"></span>
+                </div>
+              ) : (
+                "تعيين كلمة المرور"
+              )}
+            </button>
 
             <button
               style={{
                 backgroundColor: "transparent",
-                              border: "1px solid #3035A1",
-                color:'#3035A1'
-                          } }
-                          onClick={ ()=>setOpenAuth('') }
+                border: "1px solid #3035A1",
+                color: "#3035A1",
+              }}
+              onClick={() => setOpenAuth("")}
             >
               رجوع
             </button>

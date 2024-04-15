@@ -3,7 +3,7 @@ import styles from '../styleDashboard/RevolutionArchiveDash.module.css'
 import Black from './Black';
 import Kanaas from './Kanaas';
 export default function BlackListDash() {
-    const [ choiceArchife, setChoiceArchife ] = useState();
+    const [choiceArchife, setChoiceArchife] = useState("black");
   return (
     <div>
       <div className={`headDashboard`}>
@@ -15,7 +15,7 @@ export default function BlackListDash() {
             onClick={() => setChoiceArchife("black")}
             className={choiceArchife === "black" ? styles.active : ""}
           >
-          القائمة السوداء
+       مجرمين حرب
           </span>
           <span
             onClick={() => setChoiceArchife("khaan")}

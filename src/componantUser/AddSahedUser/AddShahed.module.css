@@ -79,6 +79,7 @@
   @media(max-width:800px){
   .input{
     flex-direction: column;
+    gap: 10px;
  
   }
      .inp1{

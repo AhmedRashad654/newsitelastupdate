@@ -1,66 +1,142 @@
-import React from 'react'
-
-
-
-
-
+import React, { useEffect, useState } from 'react'
 import styles from "../styleDashboard/DisplayMartysDash.module.css";
-export default function DisplayWarCriminals() {
+import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
+export default function DisplayHonorCard() {
+    const [martyrDisplay, setMartyrDataDisplay] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [loadingAccepted, setLoadingAccepted] = useState(false);
+    const navigate = useNavigate();
+    const { id } = useParams();
+    useEffect(() => {
+      async function getMartyr() {
+        await axios
+          .get(`https://syrianrevolution1.com/lists/${id}`, {
+            headers: {
+              Authorization: localStorage.getItem("token"),
+            },
+          })
+          .then((result) => setMartyrDataDisplay(result.data))
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      getMartyr();
+    }, [id]);
+console.log(martyrDisplay)
+    //////////////////handleDelete/////////////////
+    async function handleDeletePost() {
+      setLoading(true);
+      await axios
+        .delete(`https://syrianrevolution1.com/lists/${id}`, {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        })
+        .then((response) => {
+          if (response.data === "list Deleted Successfully") {
+            setLoading(false);
+            navigate("/dashboard/warcriminals");
+          }
+        })
+        .catch((error) => console.log(error));
+    }
+    /////////////////////////handleAccepted//////////////
+
+    async function handleAccepted() {
+      setLoadingAccepted(true);
+      await axios
+        .patch(`https://syrianrevolution1.com/lists/accept/${id}`, null, {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        })
+        .then( ( response ) => {
+          console.log( response );
+          if (response.data.success === "data updated successfully") {
+            setLoading(false);
+            navigate("/dashboard/warcriminals");
+          }
+          console.log(response);
+        })
+        .catch((error) => console.log(error));
+    }
   return (
     <div className={styles.DisplayMartysDash}>
       {" "}
       <div className={`headDashboard`}>
-        <p>البيانات المستلمة / مجرمين الحرب / بيانات المجرم</p>
+        <p>البيانات المستلمة /  مجرمين الحرب / بيانات المجرم</p>
       </div>
       <div className={styles.details}>
         <div className={styles.allDetailseRight}>
           <div className={styles.detailsright}>
-            <h6>اسم المستخدم : </h6>
-            <p> احمد محمد </p>
+            <h6>اسم المجرم : </h6>
+            <p>{martyrDisplay.name}</p>
           </div>
           <div className={styles.detailsright}>
-            <h6>اسم المعتقل : </h6>
-            <p> ناصر علي محمد</p>
+            <h6> الصورة : </h6>
+            <br />
+            <p>
+              {" "}
+              {martyrDisplay.profileImage &&
+              martyrDisplay.profileImage === "undefined" ? (
+                "لم تتم الاضافة"
+              ) : martyrDisplay.profileImage !== "undefined" ? (
+                <img
+                  src={`https://syrianrevolution1.com/postImages/${martyrDisplay.selfImg}`}
+                  alt="trails"
+                  style={{ width: "100px" }}
+                />
+              ) : (
+                "لم تتم الاضافة"
+              )}{" "}
+            </p>
           </div>
           <div className={styles.detailsright}>
-            <h6>اسم الاب : </h6>
-            <p>احمد محمد </p>
+            <h6> روابط خارجية : </h6>{" "}
+            {martyrDisplay.externalLinks !== undefined &&
+            martyrDisplay.externalLinks !== "undefined" ? (
+              <a href={martyrDisplay.externalLinks}> رابط خارجي</a>
+            ) : (
+              "لم تتم الاضافة"
+            )}{" "}
           </div>
-          <div className={styles.detailsright}>
-            <h6>اسم الام : </h6>
-            <p> علي محمد علي</p>
-          </div>
-          <div className={styles.detailsright}>
-            <h6>كنية المعتقل : </h6>
-            <p>احمد محمد</p>
-          </div>
-          <div className={styles.detailsright}>
-            <h6>مكان الحدث : </h6>
-            <p>احمد محمد</p>
-          </div>
-          <div className={styles.detailsright}>
-            <h6>المواليد : </h6>
-            <p>احمد محمد</p>
-          </div>
-          <div className={styles.detailsright}>
-            <h6>الجهة المسؤؤلة : </h6>
-            <p>احمد محمد</p>
-          </div>
-          <div className={styles.detailsright}>
-            <h6> الوثائق و الملفات : </h6>
-            <p>احمد محمد</p>
+          <div className={styles.detailsLeft}>
+            <h6> المحافظة : </h6>{" "}
+            {martyrDisplay.governorate !== undefined &&
+            martyrDisplay.governorate !== "undefined"
+              ? martyrDisplay.governorate
+              : "لم تتم الاضافة"}{" "}
           </div>
         </div>
+
         <div className={styles.detailsLeft}>
-          <h6>شرح مفصل : </h6>
-          الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر
-          الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر
-          الخبر الخبر الخبر الخبر الخبر الخبر الخبر الخبر
+          <h6>شرح مفصل : </h6>{" "}
+          {martyrDisplay.content !== undefined &&
+          martyrDisplay.content !== "undefined"
+            ? martyrDisplay.content
+            : "لم تتم الاضافة"}{" "}
         </div>
       </div>
       <div className={styles.btnbottom}>
-        <button className="btn btn-success">قبول</button>
-        <button className="btn btn-danger">رفض</button>
+        <button className="btn btn-success" onClick={handleAccepted}>
+          {loadingAccepted ? (
+            <div className="spinner-border text-secondary" role="status">
+              <span className="sr-only"></span>
+            </div>
+          ) : (
+            "قبول"
+          )}
+        </button>
+        <button className="btn btn-danger" onClick={handleDeletePost}>
+          {loading ? (
+            <div className="spinner-border text-secondary" role="status">
+              <span className="sr-only"></span>
+            </div>
+          ) : (
+            " رفض"
+          )}
+        </button>
       </div>
     </div>
   );

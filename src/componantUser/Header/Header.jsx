@@ -5,11 +5,37 @@ import { ContextUser } from '../../context/Context';
 import EnterInformUser from '../EnterInformUser/EnterInformUser';
 import SuccessAddInform from '../SuccessAddInform/SuccessAddInform';
 import FaildAddInform from '../FaildAddForm/FaildAddForm';
+import TawsikEmail from '../TawsikEmail';
+import axios from 'axios';
 export default function Header() {
-
   const {openAuth, setOpenAuth}= useContext(ContextUser)
-
+  function handleOpen() {
+    if ( !localStorage.getItem( 'token' ) ) {
+      setOpenAuth( 'login' );
+    } else {
+    
+        axios
+          .get(
+            `https://syrianrevolution1.com/users/single/${localStorage.getItem(
+              "idUserLogin"
+            )}`,
+            {
+              headers: {
+                Authorization: localStorage.getItem("token"),
+              },
+            }
+          )
+          .then((result) => {
+            console.log(result);
+            result?.data?.isConfident === true
+              ? setOpenAuth("enterinform")
+              : setOpenAuth("faild");
+          })
+          .catch((error) => console.log(error)); 
+    }
   
+  }
+
   return (
     <>
       <div className="header-container overflow-hidden perantHeader">
@@ -22,19 +48,21 @@ export default function Header() {
             <br />
             نحن لتوثيق الحدث ، كن شريكا معنا وسجل الآن لتحصل على ميزة التوثيق
           </p>
-          <button className="head-btn" onClick={()=>setOpenAuth('enterinform')}>
-            أدخل بيانات{' '}
+          <button className="head-btn" onClick={handleOpen}>
+            أدخل بيانات{" "}
           </button>
-          
         </div>
-        
-      <img src={image1} alt="mainpicture" className="head-img" />
+
+        <img src={image1} alt="mainpicture" className="head-img" />
       </div>
-      
-      {openAuth === 'enterinform' && <EnterInformUser />}
-      {openAuth === 'successaddinform' && <SuccessAddInform />}
-      {openAuth === 'faild' && <FaildAddInform />}
-      
+
+      {openAuth === "enterinform" && <EnterInformUser />}
+      {openAuth === "successaddinform" && <SuccessAddInform />}
+      {openAuth === "faild" && <FaildAddInform />}
+      {openAuth === "tawsicEmail" && <TawsikEmail />}
     </>
   );
 }
+
+
+

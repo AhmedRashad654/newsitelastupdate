@@ -3,23 +3,26 @@ import RegimeMassacres from './RegimeMassacres/RegimeMassacresUser';
 import Martyrs from './Martyrs/MartyrsUser';
 import Missing from './Missing/MissingUser';
 import Detainees from './Detainees/DetaineesUser';
-import SliderGraamQasad from './SliderGraamQasad';
+import { Helmet } from 'react-helmet-async';
 export default function GaraamQasad() {
   return (
     <>
+      <Helmet>
+        <title> جرائم النظام</title>
+        <meta name="description" content="  جرائم النظام" />
+      </Helmet>
       <div className="container">
         <div className="header position-relative py-5">
           <h3 className=" text-danger"> مجاز قسد </h3>
         </div>
       </div>
       <RegimeMassacres />
-      <SliderGraamQasad />
+
       <Martyrs />
-      <SliderGraamQasad />
+
       <Missing />
-      <SliderGraamQasad />
+
       <Detainees />
-      <SliderGraamQasad />
     </>
   );
 }

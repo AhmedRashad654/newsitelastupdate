@@ -8,10 +8,13 @@ import '../node_modules/bootstrap/dist/js/bootstrap.bundle';
 import '../node_modules/@fortawesome/fontawesome-free/css/all.min.css'
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { HelmetProvider } from "react-helmet-async";
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <HelmetProvider>
+      <App />
+    </HelmetProvider>
   </React.StrictMode>
 );
 
