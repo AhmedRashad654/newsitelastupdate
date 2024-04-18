@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import MainNav from '../MainNav/MainNav';
 import Navbar from '../Navbar/Navbar';
 import Footer from '../Footer/Footer';
@@ -6,36 +6,46 @@ import axios from 'axios';
 import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFile, faFileZipper } from '@fortawesome/free-solid-svg-icons';
-
+import { ContextUser } from '../../context/Context';
+import AlertImageDash from '../../componantDashboard/AlertImageDash/AlertImageDash';
 export default function NewsDetailsMascers() {
   const [single, setSingle] = useState([]);
+  const { setOpenAlert, setOpenAlertStore,openAlert,openAlertStore } = useContext(ContextUser);
   const { id } = useParams();
   useEffect(() => {
     async function getSingle() {
       await axios
-        .get(`https://syrianrevolution1.com/massacres/${id}`, {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
+        .get(`https://syrianrevolution1.com/massacres/${id}`)
+        .then((result) => {
+          console.log(result);
+          setSingle(result.data);
         })
-        .then((result) => setSingle(result.data))
         .catch((error) => console.log(error));
     }
     getSingle();
   }, [id]);
-
- 
+  //////////////////////
+  ///////////////////////
+  function openImage(src) {
+    setOpenAlert(true);
+    setOpenAlertStore(src);
+  }
+  //////////////////////
   ///////////////////////////////
   const [archief, setArchirf] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
-    axios.get("https://syrianrevolution1.com/massacres").then((result) => {
-      setArchirf(result.data.massacres);
-    });
+    axios
+      .get("https://syrianrevolution1.com/massacres/userView")
+      .then((result) => {
+        setArchirf(result.data.data);
+      });
   }, []);
+  /////////////////////////////
 
   return (
     <>
+      {openAlert && <AlertImageDash src={openAlertStore} />}
       <MainNav />
       <Navbar />
       <div className="demonstrations py-3">
@@ -55,9 +65,11 @@ export default function NewsDetailsMascers() {
                 style={{ width: "100%", marginBottom: "30px" }}
               />
               <h6> التفاصيل : </h6>
-              <p> {single?.details}</p>
+              <p> {single?.details !== "undefined" ? single?.details : ""}</p>
               <h6>المحافظة : </h6>
-              <p>{single?.governorate}</p>
+              <p>
+                {single?.governorate !== "undefined" ? single?.governorate : ""}
+              </p>
               <h6> الوثائق والمستندات : </h6>
               <div>
                 {" "}
@@ -73,6 +85,11 @@ export default function NewsDetailsMascers() {
                             src={`https://syrianrevolution1.com/postImages/${doc}`}
                             alt="documents"
                             style={{ width: "100px" }}
+                            onClick={() => {
+                              openImage(
+                                `https://syrianrevolution1.com/postImages/${doc}`
+                              );
+                            }}
                           />
                         ) : (
                           ""
@@ -96,7 +113,10 @@ export default function NewsDetailsMascers() {
                           ""
                         )}
                         {doc.slice(-4).toLowerCase() === ".mp4" ? (
-                          <video controls>
+                          <video
+                            controls
+                            style={{ width: "150px", height: "150px" }}
+                          >
                             <source
                               src={`https://syrianrevolution1.com/postImages/${doc}`}
                               type="video/mp4"
@@ -118,9 +138,18 @@ export default function NewsDetailsMascers() {
                     ))
                   : "لم تتم الاضافة"}{" "}
               </div>
+
+              <div style={{ display: "flex", gap: "10px", margin: "10px 0" }}>
+                <img
+                  src={`https://syrianrevolution1.com/images/${single?.user?.selfImg}`}
+                  alt="profile"
+                  style={{ width: "50px", height: "50px", borderRadius: "50%" }}
+                />
+                <p>{single?.user?.name}</p>
+              </div>
             </div>
             {/* /////////////////////// */}
-            <div className="lastSlider col-md-4">
+            <div className="lastSlider1 col-md-4">
               <div className=" muted p-2 overflow-hidden">
                 {archief.map((e) => (
                   <div

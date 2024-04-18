@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
 import styles from './StyleUpdateUser.module.css';
 import { useParams } from 'react-router-dom';
+import { useUser } from '../../context/Context';
 export default function UpdateLastNews() {
   // const navigate = useNavigate();
 
   //////////////////////////////////
   const [userUpdate, setUserUpdate] = useState({});
   const [ loading, setLoading ] = useState( false );
+  const {getListUser} = useUser()
   ////////////////////////////////////
   const { id } = useParams();
   ////////////function handleChange///////////////
@@ -80,7 +82,8 @@ export default function UpdateLastNews() {
         setLoading(false);
         console.log(result);
         if (result.data._id) {
-          setSuccess(true)
+          setSuccess( true );
+          getListUser();
         }
       } catch (error) {
         console.error(error);
@@ -93,15 +96,15 @@ export default function UpdateLastNews() {
       </div>
       <form action="" className={styles.form}>
         <div className={styles.headForm}>
+          {success && (
+            <p
+              className="alert alert-success alerthemself"
+              style={{ width: "100%", transform: "translatey(10px)" }}
+            >
+              تم التحديث بنجاح
+            </p>
+          )}
           <div className={styles.input}>
-            {success && (
-              <p
-                className="alert alert-success alerthemself"
-                style={{ width: "100%", transform: "translatey(10px)" }}
-              >
-                تم التحديث بنجاح
-              </p>
-            )}
             <div className={styles.inp1}>
               <label htmlFor=""> الاسم </label>
               <input

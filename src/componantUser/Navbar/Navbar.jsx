@@ -1,10 +1,17 @@
-import React, {useContext } from 'react';
+import React, {useContext, useState } from 'react';
 import './Navbar.css';
-import { NavLink } from 'react-router-dom';
+import { NavLink ,Link} from 'react-router-dom';
 import { ContextUser } from '../../context/Context';
 export default function Navbar() {
 
-   const { role } = useContext(ContextUser);
+  const { role } = useContext( ContextUser );
+    const [activeLink, setActiveLink] = useState('');
+  const handleLinkClick = (link) => {
+    setActiveLink(link);
+  };
+  const getLinkClass = (link) => {
+    return activeLink === link ? 'ahmed' : '';
+  };
   return (
     <nav className="navbar navbar-expand-lg">
       <div className="container">
@@ -22,22 +29,36 @@ export default function Navbar() {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav mb-2 w-100 p-0 d-flex justify-content-between align-items-center mb-lg-0 ">
             <li className="nav-item">
-              <NavLink
-                className={`nav-link border-bottom border-black ${({
-                  isActive,
-                }) => (isActive ? "active" : "")}`}
+              <Link
+                className={`nav-link  border-black ${getLinkClass("/")} `}
                 aria-current="page"
                 to="/"
+                onClick={() => handleLinkClick("/")}
               >
                 الرئيسية
-              </NavLink>
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link
+                className={`nav-link  border-black ${getLinkClass(
+                  "/lastNews"
+                )}`}
+                aria-current="page"
+                to="/lastNews"
+                onClick={() => handleLinkClick("/lastNews")}
+              >
+                اخر الاخبار
+              </Link>
             </li>
 
             <li className="nav-item">
-              <NavLink
-                className="nav-link position-relative evolution-archive "
+              <Link
+                className={`nav-link position-relative ${getLinkClass(
+                  "/archiefthoura"
+                )}`}
                 aria-current="page"
                 to="/archiefthoura"
+                onClick={() => handleLinkClick("/archiefthoura")}
               >
                 أرشيف الثورة{" "}
                 <i className="fa-solid fa-greater-than text-muted"></i>
@@ -50,13 +71,16 @@ export default function Navbar() {
                     ادعمنا بوثائق
                   </NavLink>
                 </div>
-              </NavLink>
+              </Link>
             </li>
             <li className="nav-item">
-              <NavLink
+              <Link
                 to="/symbolthourauser"
-                className="nav-link position-relative evolution-archive"
+                className={`nav-link position-relative evolution-archive ${getLinkClass(
+                  "/symbolthourauser"
+                )}`}
                 aria-current="page"
+                onClick={() => handleLinkClick("/symbolthourauser")}
               >
                 رموز الثورة{" "}
                 <i className="fa-solid fa-greater-than text-muted"></i>
@@ -66,13 +90,16 @@ export default function Navbar() {
                     بطاقة التكريم
                   </NavLink>
                 </div>
-              </NavLink>
+              </Link>
             </li>
             <li className="nav-item">
-              <NavLink
-                className="nav-link position-relative evolution-archive"
+              <Link
+                className={`nav-link position-relative evolution-archive  ${getLinkClass(
+                  "/blacklistuser"
+                )}`}
                 aria-current="page"
                 to="/blacklistuser"
+                onClick={() => handleLinkClick("/blacklistuser")}
               >
                 القائمة السوداء{" "}
                 <i className="fa-solid fa-greater-than text-muted"></i>
@@ -82,13 +109,16 @@ export default function Navbar() {
                     مجرمين الحرب
                   </NavLink>
                 </div>
-              </NavLink>
+              </Link>
             </li>
             <li className="nav-item">
-              <NavLink
-                className="nav-link position-relative evolution-archive"
+              <Link
+                className={`nav-link position-relative evolution-archive ${getLinkClass(
+                  "/graamsystem"
+                )}`}
                 aria-current="page"
                 to="/graamsystem"
+                onClick={() => handleLinkClick("/graamsystem")}
               >
                 جرائم النظام{" "}
                 <i className="fa-solid fa-greater-than text-muted"></i>
@@ -100,13 +130,16 @@ export default function Navbar() {
                   <NavLink className="nav-link text-white">المفقودين</NavLink>
                   <NavLink className="nav-link text-white">المعتقلين</NavLink>
                 </div>
-              </NavLink>
+              </Link>
             </li>
             <li className="nav-item">
-              <NavLink
-                className="nav-link position-relative evolution-archive"
+              <Link
+                className={`nav-link position-relative evolution-archive ${getLinkClass(
+                  "/graemqasad"
+                )}`}
                 aria-current="page"
                 to="/graemqasad"
+                onClick={() => handleLinkClick("/graemqasad")}
               >
                 جرائم قسد{" "}
                 <i className="fa-solid fa-greater-than text-muted"></i>
@@ -116,13 +149,16 @@ export default function Navbar() {
                   <NavLink className="nav-link text-white">المفقودين</NavLink>
                   <NavLink className="nav-link text-white">المعتقلين</NavLink>
                 </div>
-              </NavLink>
+              </Link>
             </li>
             <li className="nav-item">
-              <NavLink
-                className="nav-link position-relative evolution-archive"
+              <Link
+                className={`nav-link position-relative evolution-archive  ${getLinkClass(
+                  "/graemdashuser"
+                )}`}
                 aria-current="page"
                 to="/graemdashuser"
+                onClick={() => handleLinkClick("/graemdashuser")}
               >
                 جرائم داعش{" "}
                 <i className="fa-solid fa-greater-than text-muted"></i>
@@ -132,8 +168,22 @@ export default function Navbar() {
                   <NavLink className="nav-link text-white">المفقودين</NavLink>
                   <NavLink className="nav-link text-white">المعتقلين</NavLink>
                 </div>
-              </NavLink>
+              </Link>
             </li>
+          
+              <li className="nav-item">
+                <Link
+                  className={`nav-link position-relative evolution-archive ${getLinkClass(
+                    "/WantedToSystem"
+                  )}`}
+                  aria-current="page"
+                  to="/WantedToSystem"
+                  onClick={() => handleLinkClick("/WantedToSystem")}
+                >
+                  مطلوبين لنظام
+                </Link>
+              </li>
+            
             {role === "admin" || role === "supervisor" ? (
               <li className="nav-item">
                 <NavLink
@@ -153,7 +203,6 @@ export default function Navbar() {
     </nav>
   );
 }
-
 
 
 

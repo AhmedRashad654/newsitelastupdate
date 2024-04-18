@@ -1,54 +1,56 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styles from "../../styleDashboard/ResponseLastChild.module.css";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFile, faFileZipper } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, useParams } from "react-router-dom";
-
+import { ContextUser, useUser } from "../../context/Context";
 export default function ResponseLastChild() {
   const [ martyrDisplay, setMartyrDataDisplay ] = useState( [] );
-  const [ loading, setLoading ] = useState( false );
-  const [ loadingupdate, setLoadingUpdate ] = useState();
+     const { setOpenAlert, setOpenAlertStore } = useContext(ContextUser);
+  const [loading, setLoading] = useState(false);
+  const { getChildUser } = useUser();
+  // const [ loadingupdate, setLoadingUpdate ] = useState();
   const navigate = useNavigate();
-  const { id } = useParams()
-  useEffect( () => {
-      async function getMartyr() {
-        await axios
-          .get(`https://syrianrevolution1.com/childData/${id}`)
-            .then( ( result ) => {
-             
-              setMartyrDataDisplay(result.data);
-          } )
-          .catch((error) => {
-            console.log(error);
-          });
+  const { id } = useParams();
+  useEffect(() => {
+    async function getMartyr() {
+      await axios
+        .get(`https://syrianrevolution1.com/childData/${id}`)
+        .then((result) => {
+          setMartyrDataDisplay(result.data.childData);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
-    getMartyr()
-  },[id])
+    getMartyr();
+  }, [id]);
+  ///////////////////////
+  function openImage(src) {
+    setOpenAlert(true);
+    setOpenAlertStore(src);
+  }
 
-  
   //////////////////handleDelete/////////////////
   async function handleDeletePost() {
-   
-    setLoading( true );
+    setLoading(true);
     await axios
-      .delete(
-        `https://syrianrevolution1.com/childData/${id}`,
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
-      .then( ( response ) => {
-        if ( response.data === "childData Deleted Successfully" ) {
-          setLoading( false );
+      .delete(`https://syrianrevolution1.com/childData/${id}`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((response) => {
+        if (response.data === "childData Deleted Successfully") {
+          setLoading(false);
           navigate("/dashboard/dataDisplaySite");
+          getChildUser();
         }
       })
       .catch((error) => console.log(error));
-    }
-    /////////////////////////////
+  }
+  /////////////////////////////
   return (
     <div className={styles.DisplayMartysDash}>
       {" "}
@@ -134,6 +136,11 @@ export default function ResponseLastChild() {
                   src={`https://syrianrevolution1.com/imgData/${martyrDisplay.profileImage}`}
                   alt="martyr"
                   style={{ width: "100px" }}
+                  onClick={() => {
+                    openImage(
+                      `https://syrianrevolution1.com/imgData/${martyrDisplay.profileImage}`
+                    );
+                  }}
                 />
               ) : (
                 "لم تتم الاضافة"
@@ -156,6 +163,11 @@ export default function ResponseLastChild() {
                           src={`https://syrianrevolution1.com/imgData/${doc}`}
                           alt="documents"
                           style={{ width: "100px" }}
+                          onClick={() => {
+                            openImage(
+                              `https://syrianrevolution1.com/imgData/${doc}`
+                            );
+                          }}
                         />
                       ) : (
                         ""
@@ -179,7 +191,7 @@ export default function ResponseLastChild() {
                         ""
                       )}
                       {doc.slice(-4).toLowerCase() === ".mp4" ? (
-                        <video controls>
+                        <video controls style={{width:'150px',height:'150px'}}>
                           <source
                             src={`https://syrianrevolution1.com/imgData/${doc}`}
                             type="video/mp4"
@@ -214,15 +226,19 @@ export default function ResponseLastChild() {
       <div className={styles.btnbottom}>
         <button
           className="btn btn-warning"
-          onClick={() => navigate(`/dashboard/dataChildDisplaySiteupdate/${martyrDisplay._id}`)}
+          onClick={() =>
+            navigate(
+              `/dashboard/dataChildDisplaySiteupdate/${martyrDisplay._id}`
+            )
+          }
         >
-          {loadingupdate ? (
+          {/* {loadingupdate ? (
             <div className="spinner-border text-secondary" role="status">
               <span className="sr-only"></span>
             </div>
-          ) : (
-            "تعديل"
-          )}
+          ) : ( */}
+          تعديل
+          {/* )} */}
         </button>
         <button className="btn btn-danger" onClick={handleDeletePost}>
           {loading ? (

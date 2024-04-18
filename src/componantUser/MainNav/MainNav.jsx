@@ -17,6 +17,7 @@ export default function MainNav() {
   const [openNoti , setOpenNoti] = useState(false)
   const { openAuth, setOpenAuth } = useContext( ContextUser )
   const [ notification, setNontification ] = useState( [] );
+  const [ number, setNumber ] = useState();
   /////////////logout//////////////
   function handleLogout() {
     localStorage.clear()
@@ -26,7 +27,7 @@ export default function MainNav() {
     async function getNotification() {
       axios
         .get(
-          `http://localhost:4500/users/single/${localStorage.getItem(
+          `https://syrianrevolution1.com/users/single/${localStorage.getItem(
             "idUserLogin"
           )}`,
           {
@@ -36,27 +37,67 @@ export default function MainNav() {
           }
         )
         .then( ( result ) => {
-           
-              setNontification(result?.data)
+       
+          setNontification(result?.data);
+          setNumber(
+            1 +
+              result?.data?.child.length +
+              result?.data?.lists.length +
+              result?.data?.massacres.length
+          );
         })
         .catch((error) => console.log(error));
     }
     getNotification()
   }, [] )
+
   return (
     <>
       <div className="container">
-        <div className="row py-3 gy-3">
+        <div className="row py-3 gy-3" style={{ alignItems: "center" }}>
           <div className="col-md-6 d-flex justify-content-between align-items-center">
             <h1 className="m-0 h4">الثورة السورية</h1>
             <div className="contact d-flex justify-content-between align-items-center position-relative">
               {open === true ? (
                 <div className="social-icons d-flex align-items-center ms-5 p-2 text-white ">
-                  <i className="fa-brands fa-whatsapp ms-3"></i>
-                  <i className="fa-brands fa-instagram ms-3"></i>
-                  <i className="fa-brands fa-tiktok ms-3"></i>
-                  <i className="fa-brands fa-square-facebook ms-3"></i>
-                  <i className="fa-brands fa-square-twitter ms-3"></i>
+                  <a
+                    href="https://api.whatsapp.com/send/?phone=4917676000731"
+                    className="text-white"
+                  >
+                    {" "}
+                    <i className="fa-brands fa-whatsapp ms-3"></i>
+                  </a>
+                  <a
+                    href="https://www.instagram.com/syrian.revolution7"
+                    className="text-white"
+                  >
+                    <i className="fa-brands fa-instagram ms-3"></i>
+                  </a>
+                  <a
+                    href="https://t.me/Syrian_Revolution7"
+                    className="text-white"
+                  >
+                    <i class="fa-brands fa-telegram ms-3"></i>
+                  </a>
+                  <a
+                    href="https://www.tiktok.com/@syrian.revolution7"
+                    className="text-white"
+                  >
+                    <i className="fa-brands fa-tiktok ms-3"></i>
+                  </a>
+                  <a
+                    href="https://www.facebook.com/Syrian7Revolution"
+                    className="text-white"
+                  >
+                    <i className="fa-brands fa-square-facebook ms-3"></i>
+                  </a>
+                  <a
+                    href="https://twitter.com/syrian_revolut7"
+                    className="text-white"
+                  >
+                    <i className="fa-brands fa-square-twitter ms-3"></i>
+                  </a>
+
                   <i
                     className="fa-regular fa-circle-xmark text-danger close"
                     onClick={() => setOpen(false)}
@@ -66,11 +107,16 @@ export default function MainNav() {
               <p className="m-0 p-3 p-0 btn" onClick={() => setOpen(true)}>
                 تواصل معنا
               </p>
-              <div
-                className="notification position-relative"
-                onClick={() => setOpenNoti(true)}
-              >
-                <i className="fa-regular fa-bell me-2"></i>
+              <div style={{ position: "relative" }}>
+                <span style={{ position: "absolute", right: "-8px" }}>
+                  {number}
+                </span>
+                <div
+                  className="notification position-relative"
+                  onClick={() => setOpenNoti(true)}
+                >
+                  <i className="fa-regular fa-bell me-2"></i>
+                </div>
               </div>
             </div>
           </div>
@@ -95,8 +141,8 @@ export default function MainNav() {
                       src={`https://syrianrevolution1.com/images/${localStorage?.selfImg}`}
                       alt="himself"
                       style={{
-                        width: "60px",
-                        height: "50px",
+                        width: "40px",
+                        height: "40px",
                         borderRadius: "50%",
                         cursor: "pointer",
                       }}
@@ -107,8 +153,8 @@ export default function MainNav() {
                       src={imgone}
                       alt="himself"
                       style={{
-                        width: "60px",
-                        borderRadius: "50%",
+                        width: "40px",
+                        borderRadius: "40%",
                         cursor: "pointer",
                       }}
                       onClick={() => setOpenAuth("update")}
@@ -118,7 +164,7 @@ export default function MainNav() {
                   <button
                     onClick={handleLogout}
                     className="btn btn-create"
-                    style={{ height: "40px" }}
+                    style={{ height: "30px", fontSize: "10px", width: "100px" }}
                   >
                     تسجيل الخروج
                   </button>
@@ -153,7 +199,7 @@ export default function MainNav() {
                 style={{
                   position: "absolute",
                   top: "-20%",
-                  right: 0,
+                  right: "-20px",
                   color: "red",
                   cursor: "pointer",
                 }}
@@ -170,19 +216,22 @@ export default function MainNav() {
                 <p className=" position-relative bg-white p-2 pe-5 m-0 mb-2">
                   {notification && notification?.notification}
                 </p>
-                {notification.child.length !== 0 &&
+                {notification?.child &&
+                  notification?.child?.length &&
                   notification?.child.map((e) => (
                     <p className=" position-relative bg-white p-2 pe-5 m-0 mb-2">
                       {e?.notification}
                     </p>
                   ))}
-                {notification.lists.length !== 0 &&
+                {notification?.lists &&
+                  notification?.lists?.length &&
                   notification?.lists.map((e) => (
                     <p className=" position-relative bg-white p-2 pe-5 m-0 mb-2">
                       {e?.notification}
                     </p>
                   ))}
-                {notification.massacres.length !== 0 &&
+                {notification?.massacres &&
+                  notification?.massacres?.length &&
                   notification?.massacres.map((e) => (
                     <p className=" position-relative bg-white p-2 pe-5 m-0 mb-2">
                       {e?.notification}

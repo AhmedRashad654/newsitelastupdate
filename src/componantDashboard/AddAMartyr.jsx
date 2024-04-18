@@ -21,8 +21,9 @@ export default function AddAMartyr() {
   ////////////handle documents///////////
   const [ document, setDocument ] = useState( '' );
   function handleChangeDocuments( e ) {
-    setDocument( e.target.files[ 0 ] );
+    setDocument( e.target.files );
   }
+  console.log(document)
   //////////handle change //////////////
   function handlechange(e) {
     setAddData((prevState) => ({
@@ -65,15 +66,33 @@ export default function AddAMartyr() {
        if (responseValidateUser.error) {
         setErrorListUser([responseValidateUser.error.details]);
        } else {
-         setErrorListUser( "" );
-         setSuccessAdd( false );
+         setErrorListUser("");
+         setSuccessAdd(false);
          const formData = new FormData();
          formData.append("category", addData.category);
          formData.append("name", addData.name);
          formData.append("profileImage", imageProfile);
-         formData.append("documents", document);
-         formData.append("nickname", addData.nickname);
-         formData.append("dateOfBirth", addData.dateOfBirth);
+      
+         if (Array.isArray(document)) {
+           document.forEach((file) => {
+             formData.append("documents", file);
+           });
+         } else if (document instanceof FileList) {
+       
+           for (let i = 0; i < document.length; i++) {
+             formData.append("documents", document[i]);
+           }
+         }
+
+         formData.append( "nickname", addData.nickname );
+           if (
+             addData.dateOfBirth !== "" &&
+             addData.dateOfBirth !== undefined &&
+             addData.dateOfBirth !== null
+           ) {
+             formData.append("dateOfBirth", addData.dateOfBirth);
+           }
+     
          formData.append("responsibleAuthority", addData.responsibleAuthority);
          formData.append("governorate", addData.governorate);
          formData.append("fatherName", addData.fatherName);
@@ -82,33 +101,32 @@ export default function AddAMartyr() {
          formData.append("externalLinks", addData.externalLinks);
          formData.append("details", addData.details);
          try {
-                setLoading(true);
-                 const response = await fetch(
-                   `https://syrianrevolution1.com/childData/${localStorage.getItem(
-                     "idUserLogin"
-                   )}`,
-                   {
-                     method: "POST",
-                     body: formData,
-                     headers: {
-                       Authorization: localStorage.getItem("token"),
-                     },
-                   }
-                 );
+           setLoading(true);
+           const response = await fetch(
+             `https://syrianrevolution1.com/childData/${localStorage.getItem(
+               "idUserLogin"
+             )}`,
+             {
+               method: "POST",
+               body: formData,
+               headers: {
+                 Authorization: localStorage.getItem("token"),
+               },
+             }
+           );
            const result = await response.json();
            console.log(result);
            setLoading(false);
-           if ( result._id ) {
-             setSuccessAdd( true );
-             setErrorBackUser( null );
-             setErrorListUser(null)
-
+           if (result._id) {
+             setSuccessAdd(true);
+             setErrorBackUser(null);
+             setErrorListUser(null);
            } else {
-             setErrorBackUser( result );
+             setErrorBackUser(result);
            }
-             } catch (error) {
-               console.error(error);
-             }
+         } catch (error) {
+           console.error(error);
+         }
        }
    
   }
@@ -172,7 +190,7 @@ export default function AddAMartyr() {
             <div className={styles.inp1}>
               <label htmlFor=""> كنية الشهيد</label>
               <input
-                name="nikename"
+                name="nickname"
                 type="text"
                 placeholder=" كنية الشهيد"
                 className="form-control"
@@ -256,6 +274,7 @@ export default function AddAMartyr() {
               </label>
               <input
                 type="file"
+                multiple
                 id="was"
                 name="documents"
                 className="form-control"
@@ -311,6 +330,8 @@ export default function AddAMartyr() {
     </div>
   );
 }
+
+
 
 
 

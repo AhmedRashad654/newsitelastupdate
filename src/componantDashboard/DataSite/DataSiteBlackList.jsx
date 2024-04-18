@@ -1,21 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import styles from '../../styleDashboard/DataDisplaySite.module.css';
 import { useNavigate } from "react-router-dom";
-import  axios  from 'axios';
+import { useUser } from '../../context/Context';
 export default function DataSiteBlackList() {
   const navigate = useNavigate();
-  const [lastNews, setLastNews] = useState([]);
-  useEffect(() => {
-    async function getLastNews() {
-      axios
-        .get("https://syrianrevolution1.com/lists/userView")
-        .then((result) => {
-          setLastNews(result.data.data);
-        })
-        .catch((error) => console.log(error));
-    }
-    getLastNews();
-  }, []);
+  const {lastNews} = useUser()
   console.log(lastNews);
   return (
     <div className={styles.DataSiteLastNews}>

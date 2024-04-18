@@ -9,10 +9,10 @@ export default function RegimeMassacresUser() {
   useEffect(() => {
     async function getMascers() {
       await axios
-        .get("https://syrianrevolution1.com/massacres")
+        .get("https://syrianrevolution1.com/massacres/userView")
         .then((result) => {
           setMascer(
-            result.data.massacres.filter(
+            result.data.data.filter(
               (e) => e.responsibleAuthority === "daaeh"
             )
           );

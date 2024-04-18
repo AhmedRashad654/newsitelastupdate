@@ -1,36 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import styles from '../../styleDashboard/DataDisplaySite.module.css';
 import { useNavigate } from "react-router-dom";
-import  axios  from 'axios';
+import { useUser } from '../../context/Context';
+
 export default function DataSiteDaaeh() {
   const navigate = useNavigate();
-    const [ lastNews, setLastNews ] = useState( [] );
-    const [ masc, setMasc ] = useState( [] );
-  useEffect( () => {
-    async function getLastNews() {
-      axios
-        .get("https://syrianrevolution1.com/childData/userView")
-        .then((result) => {
-          setLastNews(result.data.data);
-        })
-        .catch((error) => console.log(error));
-    }
-    getLastNews()
-  }, [] )
-    console.log(lastNews)
-    ////////////////mascers//////////////
-      useEffect(() => {
-        async function getLastNews() {
-          axios
-            .get("https://syrianrevolution1.com/massacres")
-              .then( ( result ) => {
-               
-              setMasc(result.data.massacres);
-            })
-            .catch((error) => console.log(error));
-        }
-        getLastNews();
-      }, []);
+  //////////////////
+  const { child, masc } = useUser();
+
   return (
     <div className={styles.DataSiteLastNews}>
       <div className={styles.allUser}>
@@ -44,8 +21,8 @@ export default function DataSiteDaaeh() {
               </tr>
             </thead>
             <tbody>
-              {lastNews &&
-                lastNews.map((user, index) =>
+              {child &&
+                child.map((user, index) =>
                   (user.category === "martyr" ||
                     user.category === "adetaine" ||
                     user.category === "missing") &&

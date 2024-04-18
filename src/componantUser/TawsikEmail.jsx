@@ -38,7 +38,10 @@ export default function TawsikEmail() {
       )
         .then( ( result ) => {
             setLoading( false )
-            console.log( result )
+          if ( result.data.user.createdAt ) {
+            alert( 'تم رفع الوثيقة وسيتم مراجعتها' )
+            setOpenAuth('')
+           }
         } )
         .catch( ( error ) => {
             setLoading( false );

@@ -1,64 +1,72 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styles from "../styleDashboard/DisplayMartysDash.module.css";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFile, faFileZipper } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, useParams } from "react-router-dom";
-
+import { ContextUser, useUser } from "../context/Context";
 export default function DisplayMissingDash() {
-    const [martyrDisplay, setMartyrDataDisplay] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [loadingAccepted, setLoadingAccepted] = useState(false);
-    const navigate = useNavigate();
-    const { id } = useParams();
-    useEffect(() => {
-      async function getMartyr() {
-        await axios
-          .get(`https://syrianrevolution1.com/childData/${id}`)
-          .then((result) => setMartyrDataDisplay(result.data))
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-      getMartyr();
-    }, [id]);
-
-    //////////////////handleDelete/////////////////
-    async function handleDeletePost() {
-      setLoading(true);
+  const { setOpenAlert, setOpenAlertStore } = useContext( ContextUser );
+   const { getMartyr } = useUser();
+  const [martyrDisplay, setMartyrDataDisplay] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [loadingAccepted, setLoadingAccepted] = useState(false);
+  const navigate = useNavigate();
+  const { id } = useParams();
+  useEffect(() => {
+    async function getMartyr() {
       await axios
-        .delete(`https://syrianrevolution1.com/childData/${id}`, {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        })
-        .then((response) => {
-          if (response.data === "childData Deleted Successfully") {
-            setLoading(false);
-            navigate("/dashboard/missingdash");
-          }
-        })
-        .catch((error) => console.log(error));
+        .get(`https://syrianrevolution1.com/childData/${id}`)
+        .then((result) => setMartyrDataDisplay(result.data.childData))
+        .catch((error) => {
+          console.log(error);
+        });
     }
-    /////////////////////////handleAccepted//////////////
+    getMartyr();
+  }, [id]);
+  ///////////////////////
+  function openImage(src) {
+    setOpenAlert(true);
+    setOpenAlertStore(src);
+  }
+  //////////////////handleDelete/////////////////
+  async function handleDeletePost() {
+    setLoading(true);
+    await axios
+      .delete(`https://syrianrevolution1.com/childData/${id}`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((response) => {
+        if (response.data === "childData Deleted Successfully") {
+          setLoading(false);
+          navigate( "/dashboard/missingdash" );
+          getMartyr()
+        }
+      })
+      .catch((error) => console.log(error));
+  }
+  /////////////////////////handleAccepted//////////////
 
-    async function handleAccepted() {
-      setLoadingAccepted(true);
-      await axios
-        .patch(`https://syrianrevolution1.com/childData/${id}`, null, {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        })
-        .then((response) => {
-          if (response.data.success === "data updated successfully") {
-            setLoading(false);
-            navigate("/dashboard/missingdash");
-          }
-          console.log(response);
-        })
-        .catch((error) => console.log(error));
-    }
+  async function handleAccepted() {
+    setLoadingAccepted(true);
+    await axios
+      .patch(`https://syrianrevolution1.com/childData/${id}`, null, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((response) => {
+        if (response.data.success === "data updated successfully") {
+          setLoading(false);
+          navigate("/dashboard/missingdash");
+          getMartyr()
+        }
+        console.log(response);
+      })
+      .catch((error) => console.log(error));
+  }
   return (
     <div className={styles.DisplayMartysDash}>
       {" "}
@@ -144,6 +152,11 @@ export default function DisplayMissingDash() {
                   src={`https://syrianrevolution1.com/imgData/${martyrDisplay.profileImage}`}
                   alt="martyr"
                   style={{ width: "100px" }}
+                  onClick={() => {
+                    openImage(
+                      `https://syrianrevolution1.com/imgData/${martyrDisplay.profileImage}`
+                    );
+                  }}
                 />
               ) : (
                 "لم تتم الاضافة"
@@ -166,6 +179,11 @@ export default function DisplayMissingDash() {
                           src={`https://syrianrevolution1.com/imgData/${doc}`}
                           alt="documents"
                           style={{ width: "100px" }}
+                          onClick={() => {
+                            openImage(
+                              `https://syrianrevolution1.com/imgData/${martyrDisplay.profileImage}`
+                            );
+                          }}
                         />
                       ) : (
                         ""
@@ -189,7 +207,10 @@ export default function DisplayMissingDash() {
                         ""
                       )}
                       {doc.slice(-4).toLowerCase() === ".mp4" ? (
-                        <video controls width="200px">
+                        <video
+                          controls
+                          style={{ width: "150px", height: "150px" }}
+                        >
                           <source
                             src={`https://syrianrevolution1.com/imgData/${doc}`}
                             type="video/mp4"

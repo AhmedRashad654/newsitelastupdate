@@ -1,21 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import style from '../styleDashboard/MartyrsDash.module.css';
-import axios from 'axios';
+
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../context/Context';
 export default function DetaineesDash() {
   const navigate = useNavigate();
-    const [detainees, setDetainess] = useState([]);
-    async function getMartyr() {
-      await axios
-        .get("https://syrianrevolution1.com/childData")
-        .then((result) => setDetainess(result.data.data))
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-    useEffect(() => {
-      getMartyr();
-    }, []);
+   const { childDash } = useUser();
 
   return (
     <div className={style.MartyrsDash}>
@@ -31,7 +21,7 @@ export default function DetaineesDash() {
             </tr>
           </thead>
           <tbody>
-            {detainees.map((user, index) =>
+            {childDash.map((user, index) =>
               user.category === "adetaine" && user.isAccepted === false ? (
                 <tr key={index}>
                   <td>{user.name} </td>

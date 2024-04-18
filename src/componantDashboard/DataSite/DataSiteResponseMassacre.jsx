@@ -1,51 +1,62 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styles from "../../styleDashboard/ResponseLastChild.module.css";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFile, faFileZipper } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, useParams } from "react-router-dom";
-
+import { ContextUser, useUser } from "../../context/Context";
 export default function DataSiteResponseMassacre() {
-  const [ martyrDisplay, setMartyrDataDisplay ] = useState( [] );
-  const [loadingdel,setLoadingDel] = useState(false)
+  const [martyrDisplay, setMartyrDataDisplay] = useState([]);
+  const [loadingdel, setLoadingDel] = useState(false);
+  const { getMascersUser } = useUser();
+    const { setOpenAlert, setOpenAlertStore } = useContext(ContextUser);
   const navigate = useNavigate();
-  const { id } = useParams()
-  useEffect( () => {
-      async function getMartyr() {
-        await axios
-          .get(`https://syrianrevolution1.com/massacres/${id}`, {
-            headers: {
-              Authorization: localStorage.getItem("token"),
-            },
-          })
-          .then((result) => {
-            setMartyrDataDisplay(result.data);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+  const { id } = useParams();
+  useEffect(() => {
+    async function getMartyr() {
+      await axios
+        .get(`https://syrianrevolution1.com/massacres/${id}`, {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        })
+        .then((result) => {
+          setMartyrDataDisplay(result.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
-    getMartyr()
-  },[id])
+    getMartyr();
+  }, [id]);
 
-  
+  ///////////////////////
+  function openImage(src) {
+    setOpenAlert(true);
+    setOpenAlertStore(src);
+  }
   //////////////////handleDelete/////////////////
   async function handleDeletePost() {
-   
     setLoadingDel(true);
     await axios
       .delete(`https://syrianrevolution1.com/massacres/${id}`, {
         headers: {
           Authorization: localStorage.getItem("token"),
         },
-      }).then( ( response ) => { 
-  
-      }).catch( ( error ) => console.log( error ) );
-        setLoadingDel(false);
-        navigate("/dashboard/dataDisplaySite");
-    }
+      })
+      .then((response) => {
+        if (response.data === "massacres Deleted Successfully") {
+          setLoadingDel(false);
+          navigate("/dashboard/dataDisplaySite");
+          getMascersUser();
+          console.log(response);
+        }
+      })
+      .catch((error) => console.log(error));
+    setLoadingDel(false);
+  }
 
-    /////////////////////////////
+  /////////////////////////////
   return (
     <div className={styles.DisplayMartysDash}>
       {" "}
@@ -91,6 +102,11 @@ export default function DataSiteResponseMassacre() {
                   src={`https://syrianrevolution1.com/postImages/${martyrDisplay.profileImage}`}
                   alt="martyr"
                   style={{ width: "100px" }}
+                  onClick={() => {
+                    openImage(
+                      `https://syrianrevolution1.com/postImages/${martyrDisplay.profileImage}`
+                    );
+                  }}
                 />
               ) : (
                 "لم تتم الاضافة"
@@ -113,6 +129,11 @@ export default function DataSiteResponseMassacre() {
                           src={`https://syrianrevolution1.com/postImages/${doc}`}
                           alt="documents"
                           style={{ width: "100px" }}
+                          onClick={() => {
+                            openImage(
+                              `https://syrianrevolution1.com/postImages/${doc}`
+                            );
+                          }}
                         />
                       ) : (
                         ""
@@ -171,11 +192,13 @@ export default function DataSiteResponseMassacre() {
       <div className={styles.btnbottom}>
         <button
           className="btn btn-warning"
-          onClick={() => navigate(`/dashboard/dataChildDisplaySitemascrupdate/${martyrDisplay._id}`)}
+          onClick={() =>
+            navigate(
+              `/dashboard/dataChildDisplaySitemascrupdate/${martyrDisplay._id}`
+            )
+          }
         >
-       
-            تعديل
-    
+          تعديل
         </button>
         <button className="btn btn-danger" onClick={handleDeletePost}>
           {loadingdel ? (

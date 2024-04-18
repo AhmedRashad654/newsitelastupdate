@@ -2,64 +2,74 @@ import React, { useEffect, useState } from 'react'
 import styles from "../styleDashboard/DisplayMartysDash.module.css";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { ContextUser, useUser } from "../context/Context";
+import { useContext } from 'react';
 export default function DisplayHonorCard() {
-    const [martyrDisplay, setMartyrDataDisplay] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [loadingAccepted, setLoadingAccepted] = useState(false);
-    const navigate = useNavigate();
-    const { id } = useParams();
-    useEffect(() => {
-      async function getMartyr() {
-        await axios
-          .get(`https://syrianrevolution1.com/lists/${id}`, {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        })
-          .then((result) => setMartyrDataDisplay(result.data))
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-      getMartyr();
-    }, [id]);
-
-    //////////////////handleDelete/////////////////
-    async function handleDeletePost() {
-      setLoading(true);
+  const { setOpenAlert, setOpenAlertStore } = useContext(ContextUser);
+  const [martyrDisplay, setMartyrDataDisplay] = useState([]);
+  const [ loading, setLoading ] = useState( false );
+   const { getList } = useUser();
+  const [loadingAccepted, setLoadingAccepted] = useState(false);
+  const navigate = useNavigate();
+  const { id } = useParams();
+  useEffect(() => {
+    async function getMartyr() {
       await axios
-        .delete(`https://syrianrevolution1.com/lists/${id}`, {
+        .get(`https://syrianrevolution1.com/lists/${id}`, {
           headers: {
             Authorization: localStorage.getItem("token"),
           },
         })
-        .then((response) => {
-          if (response.data === "list Deleted Successfully") {
-            setLoading(false);
-            navigate("/dashboard/honorcard");
-          }
-        })
-        .catch((error) => console.log(error));
+        .then((result) => setMartyrDataDisplay(result.data))
+        .catch((error) => {
+          console.log(error);
+        });
     }
-    /////////////////////////handleAccepted//////////////
+    getMartyr();
+  }, [id]);
+  //////////////
+  function openImage(src) {
+    setOpenAlert(true);
+    setOpenAlertStore(src);
+  }
+  //////////////////handleDelete/////////////////
+  async function handleDeletePost() {
+    setLoading(true);
+    await axios
+      .delete(`https://syrianrevolution1.com/lists/${id}`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((response) => {
+        if (response.data === "list Deleted Successfully") {
+          setLoading(false);
+          navigate( "/dashboard/honorcard" );
+          getList();
+        }
+      })
+      .catch((error) => console.log(error));
+  }
+  /////////////////////////handleAccepted//////////////
 
-    async function handleAccepted() {
-      setLoadingAccepted(true);
-      await axios
-        .patch(`https://syrianrevolution1.com/lists/accept/${id}`, null, {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        })
-        .then((response) => {
-          if (response.data.success === "data updated successfully") {
-            setLoading(false);
-            navigate("/dashboard/honorcard");
-          }
-          console.log(response);
-        })
-        .catch((error) => console.log(error));
-    }
+  async function handleAccepted() {
+    setLoadingAccepted(true);
+    await axios
+      .patch(`https://syrianrevolution1.com/lists/accept/${id}`, null, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((response) => {
+        if (response.data.success === "data updated successfully") {
+          setLoading(false);
+          navigate( "/dashboard/honorcard" );
+          getList();
+        }
+        console.log(response);
+      })
+      .catch((error) => console.log(error));
+  }
   return (
     <div className={styles.DisplayMartysDash}>
       {" "}
@@ -85,6 +95,11 @@ export default function DisplayHonorCard() {
                   src={`https://syrianrevolution1.com/postImages/${martyrDisplay.selfImg}`}
                   alt="trails"
                   style={{ width: "100px" }}
+                  onClick={() => {
+                    openImage(
+                      `https://syrianrevolution1.com/postImages/${martyrDisplay.selfImg}`
+                    );
+                  }}
                 />
               ) : (
                 "لم تتم الاضافة"

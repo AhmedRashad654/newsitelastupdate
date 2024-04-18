@@ -1,10 +1,12 @@
 import React, { useState }  from "react";
 import styles from "./UpdateChild.module.css";
 import { useParams } from "react-router-dom";
+import { useUser } from "../../context/Context";
 export default function ResponseUpdateChild() {
   //////////////////////////////////
   const [userUpdate, setUserUpdate] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [ loading, setLoading ] = useState( false );
+   const { getChildUser } = useUser();
   ////////////////////////////////////
   const [ success, setSuccess ] = useState( false );
   ////////////////////////////
@@ -86,7 +88,8 @@ export default function ResponseUpdateChild() {
       setLoading(false);
       console.log(result);
       if (result.data._id) {
-        setSuccess(true)
+        setSuccess( true )
+        getChildUser();
       } else if ( result === 'Date of birth cannot be in the future' ) {
         alert('التاريخ غير صالح')
       }

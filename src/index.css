@@ -75,6 +75,7 @@ tr:nth-child(even) {background-color:rgb(232, 231, 231);}
   max-height: 350px;
   overflow-y: auto;
 }
+
   .containerTable::-webkit-scrollbar {
     width: 10px;
   }
@@ -116,6 +117,21 @@ tr:nth-child(even) {background-color:rgb(232, 231, 231);}
   overflow-y: auto;
   max-height: 500px;
 }
+.lastSlider1{
+  overflow-y: auto;
+  max-height: 700px;
+}
+  .lastSlider1::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  .lastSlider1::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  .lastSlider1::-webkit-scrollbar-thumb {
+    background: rgb(188, 90, 90);
+  }
   .lastSlider::-webkit-scrollbar {
     width: 10px;
   }
@@ -130,6 +146,10 @@ tr:nth-child(even) {background-color:rgb(232, 231, 231);}
   @media(min-width:800px){
   .fimg{
     height: 190px;
+    
+  }
+  .gimg{
+    height: 450px;
   }
   }
   .demonstrations p,.regime p,.martyrs p,.detainees p{

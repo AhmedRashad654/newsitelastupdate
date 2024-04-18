@@ -21,7 +21,7 @@ export default function AddAMartyr() {
   ////////////handle documents///////////
   const [document, setDocument] = useState("");
   function handleChangeDocuments(e) {
-    setDocument(e.target.files[0]);
+    setDocument(e.target.files);
   }
   //////////handle change //////////////
   function handlechange(e) {
@@ -71,9 +71,28 @@ export default function AddAMartyr() {
       formData.append("category", addData.category);
       formData.append("name", addData.name);
       formData.append("profileImage", imageProfile);
-      formData.append("documents", document);
-      formData.append("nickname", addData.nickname);
-      formData.append("dateOfBirth", addData.dateOfBirth);
+     
+      if (Array.isArray(document)) {
+        document.forEach((file) => {
+          formData.append("documents", file);
+        });
+      } else if (document instanceof FileList) {
+     
+        for (let i = 0; i < document.length; i++) {
+          formData.append("documents", document[i]);
+        }
+      }
+   
+      formData.append( "nickname", addData.nickname );
+        
+           if (
+             addData.dateOfBirth !== "" &&
+             addData.dateOfBirth !== undefined &&
+             addData.dateOfBirth !== null
+           ) {
+             formData.append("dateOfBirth", addData.dateOfBirth);
+           }
+     
       formData.append("responsibleAuthority", addData.responsibleAuthority);
       formData.append("governorate", addData.governorate);
       formData.append("fatherName", addData.fatherName);
@@ -85,13 +104,13 @@ export default function AddAMartyr() {
         setLoading(true);
         const response = await fetch(
           `https://syrianrevolution1.com/childData/${localStorage.getItem(
-                     "idUserLogin"
-                   )}`,
+            "idUserLogin"
+          )}`,
           {
             method: "POST",
             body: formData,
             headers: {
-              Authorization:localStorage.getItem('token')
+              Authorization: localStorage.getItem("token"),
             },
           }
         );

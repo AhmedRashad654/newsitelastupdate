@@ -5,7 +5,7 @@ import { faCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { ContextUser} from '../../context/Context';
 export default function LoginUser() {
 
-  const {openAuth, setOpenAuth}= useContext(ContextUser)
+  const { setOpenAuth}= useContext(ContextUser)
 
   return (
     <div className={style.RegisterUser}>

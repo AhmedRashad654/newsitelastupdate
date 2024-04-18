@@ -11,9 +11,11 @@ import {
   faUserGroup,
 } from '@fortawesome/free-solid-svg-icons';
 import { ContextUser } from '../context/Context';
+import AlertLogout from '../componantDashboard/AlertImageDash/AlertLogout'
 export default function LeftSideBar() {
   const [ isMobile, setIsMobile ] = useState( false );
-   const { role } = useContext(ContextUser);
+ 
+   const { role, setOpenLogout, openLogout } = useContext(ContextUser);
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 950);
@@ -27,14 +29,40 @@ export default function LeftSideBar() {
   }, [] );
   
   //////////////function logout//////////////
-  function handleLogout() {
-    localStorage.clear();
-  }
+
   return (
     <div className={style.LeftSideBar}>
       <div className={style.first}>
-        {!isMobile ? <img src={imgAvatar} alt="Avatar" /> : ""}
-        <p>admin</p>
+        {!isMobile ? (
+          localStorage?.selfImg !== undefined &&
+          localStorage?.selfImg !== "undefined" &&
+          localStorage?.selfImg !== null &&
+          localStorage?.selfImg !== "" ? (
+            <img
+              src={`https://syrianrevolution1.com/images/${localStorage?.selfImg}`}
+              alt="himself"
+              style={{
+                width: "40px",
+                height: "40px",
+                borderRadius: "50%",
+                cursor: "pointer",
+              }}
+            />
+          ) : (
+            <img
+              src={imgAvatar}
+              alt="himself"
+              style={{
+                width: "40px",
+                borderRadius: "40%",
+                cursor: "pointer",
+              }}
+            />
+          )
+        ) : (
+          ""
+        )}
+        <p>{role}</p>
       </div>
       <div className={style.second}>
         {role === "admin" ? (
@@ -107,7 +135,7 @@ export default function LeftSideBar() {
               {" "}
               {isMobile ? "جر" : "جرائم النظام"}{" "}
             </NavLink>
-            <NavLink to="/dashboard/excel">
+            <NavLink to="/dashboard/allexcel">
               {" "}
               {isMobile ? "مطل " : " مطلوبين للنظام"}{" "}
             </NavLink>
@@ -124,13 +152,14 @@ export default function LeftSideBar() {
         </div>
         <div className={style.secondFourth}>
           <div className={style.headsecondsecond}>
-            <Link to="/" onClick={handleLogout}>
+            <Link  onClick={() => setOpenLogout(true)}>
               <FontAwesomeIcon icon={faArrowRightFromBracket} />
               {!isMobile ? <p> تسجيل الخروج</p> : ""}
             </Link>
           </div>
         </div>
       </div>
+      {openLogout && <AlertLogout/>}
     </div>
   );
 }

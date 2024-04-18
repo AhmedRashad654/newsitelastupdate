@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styles from "../styleDashboard/DisplayMartysDash.module.css";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFile, faFileZipper } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate, useParams } from "react-router-dom";
+import { ContextUser, useUser } from "../context/Context";
 
 export default function DisplayMartysDash() {
+   const { setOpenAlert, setOpenAlertStore } =
+    useContext( ContextUser );
+  const {getMartyr} =  useUser()
   const [ martyrDisplay, setMartyrDataDisplay ] = useState( [] );
   const [ loading, setLoading ] = useState( false );
   const [loadingAccepted,setLoadingAccepted] = useState(false)
@@ -15,7 +19,7 @@ export default function DisplayMartysDash() {
       async function getMartyr() {
         await axios
           .get(`https://syrianrevolution1.com/childData/${id}`)
-          .then((result) => setMartyrDataDisplay(result.data))
+          .then((result) => setMartyrDataDisplay(result.data.childData))
           .catch((error) => {
             console.log(error);
           });
@@ -23,7 +27,12 @@ export default function DisplayMartysDash() {
     getMartyr()
   },[id])
 
+  ///////////////////////
+  function openImage(src) {
 
+    setOpenAlert( true );
+    setOpenAlertStore(src)
+  }
   //////////////////handleDelete/////////////////
   async function handleDeletePost() {
    
@@ -40,7 +49,8 @@ export default function DisplayMartysDash() {
       .then( ( response ) => {
         if ( response.data === "childData Deleted Successfully" ) {
           setLoading( false );
-          navigate("/dashboard/martyrs");
+          navigate( "/dashboard/martyrs" );
+          getMartyr();
         }
       })
       .catch((error) => console.log(error));
@@ -59,7 +69,8 @@ export default function DisplayMartysDash() {
       .then((response) => {
         if (response.data.success === "data updated successfully") {
           setLoading(false);
-          navigate("/dashboard/martyrs");
+          navigate( "/dashboard/martyrs" );
+          getMartyr();
         }
         console.log( response );
       })
@@ -150,6 +161,11 @@ export default function DisplayMartysDash() {
                   src={`https://syrianrevolution1.com/imgData/${martyrDisplay.profileImage}`}
                   alt="martyr"
                   style={{ width: "100px" }}
+                  onClick={() => {
+                    openImage(
+                      `https://syrianrevolution1.com/imgData/${martyrDisplay.profileImage}`
+                    );
+                  }}
                 />
               ) : (
                 "لم تتم الاضافة"
@@ -172,6 +188,11 @@ export default function DisplayMartysDash() {
                           src={`https://syrianrevolution1.com/imgData/${doc}`}
                           alt="documents"
                           style={{ width: "100px" }}
+                          onClick={() => {
+                            openImage(
+                              `https://syrianrevolution1.com/imgData/${doc}`
+                            );
+                          }}
                         />
                       ) : (
                         ""
@@ -195,10 +216,14 @@ export default function DisplayMartysDash() {
                         ""
                       )}
                       {doc.slice(-4).toLowerCase() === ".mp4" ? (
-                        <video controls>
+                        <video
+                          controls
+                          style={{ width: "150px", height: "150px" }}
+                        >
                           <source
                             src={`https://syrianrevolution1.com/imgData/${doc}`}
                             type="video/mp4"
+                          
                           />
                         </video>
                       ) : (
@@ -234,7 +259,7 @@ export default function DisplayMartysDash() {
               <span className="sr-only"></span>
             </div>
           ) : (
-          "قبول"
+            "قبول"
           )}
         </button>
         <button className="btn btn-danger" onClick={handleDeletePost}>
@@ -257,17 +282,4 @@ export default function DisplayMartysDash() {
 
 
 
-// async function handleAccepted() {
-//   setLoadingAccepted(true);
-//   await axios
-//     .patch(`https://syrianrevolution1.com/childData/${id}`, null, {
-//       headers: {
-//         Authorization: localStorage.getItem("token"),
-//       },
-//     })
-//     .then((response) => {
-//       console.log(response);
-//       // اضف هنا المنطق الإضافي حسب احتياجاتك
-//     })
-//     .catch((error) => console.log(error));
-// }
+

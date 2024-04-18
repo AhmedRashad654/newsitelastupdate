@@ -4,7 +4,8 @@ import { ContextUser } from "../../context/Context";
 import Joi from "joi";
 
 export default function AddMogramUser() {
-  const { setOpenAuth } = useContext(ContextUser);
+  const { setOpenAuth, getSingleUser, checkConfition } =
+    useContext(ContextUser);
   //////////////////////////////////////////////////////////
 
   const [addData, setAddData] = useState({
@@ -19,7 +20,6 @@ export default function AddMogramUser() {
   function handleChangeImageProfile(e) {
     setImageProfile(e.target.files[0]);
   }
-  console.log(imageProfile);
   //////////handle change //////////////
   function handlechange(e) {
     setAddData((prevState) => ({
@@ -48,43 +48,49 @@ export default function AddMogramUser() {
     if (responseValidateUser.error) {
       setErrorListUser([responseValidateUser.error.details]);
     } else {
-      setErrorListUser("");
-      setSuccessAdd(false);
-      const formData = new FormData();
-      formData.append("name", addData.name);
-      formData.append("selfImg", imageProfile);
-      formData.append("externalLinks", addData.externalLinks);
-      formData.append("governorate", addData.governorate);
-      formData.append("category", addData.category);
-      formData.append("content", addData.content);
+      await getSingleUser();
+      if ( checkConfition === true ) {
+           setErrorListUser("");
+           setSuccessAdd(false);
+           const formData = new FormData();
+           formData.append("name", addData.name);
+           formData.append("selfImg", imageProfile);
+           formData.append("externalLinks", addData.externalLinks);
+           formData.append("governorate", addData.governorate);
+           formData.append("category", addData.category);
+           formData.append("content", addData.content);
 
-      try {
-        setLoading(true);
-        const response = await fetch(
-          `https://syrianrevolution1.com/lists/${localStorage.getItem(
-            "idUserLogin"
-          )}`,
-          {
-            method: "POST",
-            body: formData,
-            headers: {
-              Authorization: localStorage.getItem("token"),
-            },
-          }
-        );
-        const result = await response.json();
-        console.log(result);
-        setLoading(false);
-        if (result._id) {
-          setSuccessAdd(true);
-          setErrorBackUser(null);
-          setErrorListUser(null);
-        } else {
-          setErrorBackUser(result);
-        }
-      } catch (error) {
-        console.error(error);
+           try {
+             setLoading(true);
+             const response = await fetch(
+               `https://syrianrevolution1.com/lists/${localStorage.getItem(
+                 "idUserLogin"
+               )}`,
+               {
+                 method: "POST",
+                 body: formData,
+                 headers: {
+                   Authorization: localStorage.getItem("token"),
+                 },
+               }
+             );
+             const result = await response.json();
+             console.log(result);
+             setLoading(false);
+             if (result._id) {
+               setSuccessAdd(true);
+               setErrorBackUser(null);
+               setErrorListUser(null);
+             } else {
+               setErrorBackUser(result);
+             }
+           } catch (error) {
+             console.error(error);
+           }
+      } else {
+        setOpenAuth('faild')
       }
+   
     }
   }
 
@@ -96,7 +102,7 @@ export default function AddMogramUser() {
             <p
               key={index}
               className="alert alert-secondary alerthemself"
-              style={{ transform: "translateY(0)", width: "100%" }}
+              style={{ transform: "translateY(20px)", width: "90%" }}
             >
               {error[index].message}
             </p>

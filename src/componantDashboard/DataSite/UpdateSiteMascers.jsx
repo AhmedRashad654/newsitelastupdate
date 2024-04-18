@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import styles from './StyleUpdateUser.module.css';
 import { useParams } from 'react-router-dom';
+import { useUser } from '../../context/Context';
 export default function UpdateSiteMascers() {
   //////////////////////////////////
   const [userUpdate, setUserUpdate] = useState({});
   const [ loading, setLoading ] = useState( false );
+  const {getMascersUser} = useUser()
   //////////////////////////
   const [ success, setSuccess ] = useState( false );
   ////////////////////////////////////
@@ -71,7 +73,8 @@ export default function UpdateSiteMascers() {
       setLoading(false);
       console.log(result);
       if (result.data._id) {
-       setSuccess(true)
+        setSuccess( true )
+        getMascersUser();
       }
     } catch (error) {
       console.error(error);

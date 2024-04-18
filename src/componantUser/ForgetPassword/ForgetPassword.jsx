@@ -56,9 +56,12 @@ export default function ForgetPassword() {
                 navigate( `/success/${data.data.userId}` );
                 setOpenAuth('')
                 setLoading(false)
-              } else if (data?.data?.message === "email not found") {
-                setLoading( false );
-                setErrorBack(true)
+              } else if (
+                data?.data?.message === "email not found" ||
+                data?.data?.message === "key is wrong"
+              ) {
+                setLoading(false);
+                setErrorBack(true);
               }
             })
             .catch((data) => console.log(data));
@@ -128,7 +131,7 @@ export default function ForgetPassword() {
             />
           </div>
           <div className={style.btnInpu1}>
-            <button onClick={(e) => forgetPassword(e)} type="submit">
+            <button onClick={(e) => forgetPassword(e)} type="submit" style={{padding:'10px 20px'}}>
               {" "}
               {loading ? (
                 <div className="spinner-border text-secondary" role="status">

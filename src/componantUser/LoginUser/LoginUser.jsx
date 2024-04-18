@@ -111,7 +111,7 @@ export default function LoginUser() {
           البيانات غير صحيحة
           </p>
         )}
-        <div className={style.inform}>
+        <div className={style.inform3}>
           <div className={style.inpi2}>
             <label htmlFor=""> البريد الالكتروني </label>
             <input
@@ -141,7 +141,7 @@ export default function LoginUser() {
             </p>
           </div>
           <div className={style.btnInpu}>
-            <button type="submit">
+            <button type="submit" style={{padding:'10px 0'}}>
               {" "}
               {loading ? (
                 <div className="spinner-border text-secondary" role="status">

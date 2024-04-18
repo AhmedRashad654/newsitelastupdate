@@ -1,21 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import style from "../styleDashboard/MartyrsDash.module.css";
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
+
+import { useUser } from '../context/Context';
 export default function TraitorsDash() {
   const navigate = useNavigate();
-      const [detainees, setDetainess] = useState([]);
-      async function getMartyr() {
-        await axios
-          .get("https://syrianrevolution1.com/lists")
-          .then((result) => setDetainess(result.data.data))
-          .catch((error) => {
-            console.log(error);
-          });
-      }
-      useEffect(() => {
-        getMartyr();
-      }, [] );
+      const { listDash } = useUser();
+ 
   return (
     <div className={style.MartyrsDash}>
       <div className={`headDashboard`}>
@@ -30,7 +21,7 @@ export default function TraitorsDash() {
             </tr>
           </thead>
           <tbody>
-            {detainees.map((user, index) =>
+            {listDash.map((user, index) =>
               user.category === "Traitors" && user.isAccepted === false ? (
                 <tr key={index}>
                   <td>{user.name} </td>
@@ -39,7 +30,6 @@ export default function TraitorsDash() {
                       className={`add `}
                       style={{ backgroundColor: "#3B9058", color: "white" }}
                       onClick={() => {
-                    
                         navigate(`/dashboard/traitors/${user._id}`);
                       }}
                     >

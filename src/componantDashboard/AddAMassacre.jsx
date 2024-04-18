@@ -20,7 +20,7 @@ export default function AddAMassacre() {
   ////////////handle documents///////////
   const [document, setDocument] = useState("");
   function handleChangeDocuments(e) {
-    setDocument(e.target.files[0]);
+    setDocument(e.target.files);
   }
   //////////handle change //////////////
   function handlechange(e) {
@@ -58,7 +58,18 @@ setSuccessAdd(false);
       const formData = new FormData();
       formData.append("title", addData.title);
       formData.append("profileImage", imageProfile);
-      formData.append("documents", document);
+
+      if (Array.isArray(document)) {
+        document.forEach((file) => {
+          formData.append("documents", file);
+        });
+      } else if (document instanceof FileList) {
+     
+        for (let i = 0; i < document.length; i++) {
+          formData.append("documents", document[i]);
+        }
+      }
+      // formData.append("documents", document);
       formData.append("responsibleAuthority", addData.responsibleAuthority);
       formData.append("governorate", addData.governorate);
       formData.append("details", addData.details);
@@ -72,8 +83,7 @@ setSuccessAdd(false);
             method: "POST",
             body: formData,
             headers: {
-              Authorization:
-                localStorage.getItem('token'),
+              Authorization: localStorage.getItem("token"),
             },
           }
         );
@@ -142,16 +152,19 @@ setSuccessAdd(false);
           />
         </div>
         <div className={styles.inp1}>
-          <p style={{ fontSize: "10px", marginBottom: "5px" }}>
+          <p
+            style={{ fontSize: "10px", marginBottom: "5px", color: "#5050b6" }}
+          >
             وثيقة او ملف (ملف pdf او word او فيديو mp4 او ملف zip)
           </p>
-          <label htmlFor="ui" className="customfileupload">
+          <label htmlFor="ui" className="customfileupload" style={{color:'gray'}}>
             {" "}
             ارفع الملف هنا
           </label>
           <input
             type="file"
             id="ui"
+            multiple
             className="form-control"
             placeholder=" الوثائق والملفات"
             onChange={handleChangeDocuments}

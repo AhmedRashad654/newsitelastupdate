@@ -1,18 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import style from "../styleDashboard/MartyrsDash.module.css";
 import { useNavigate } from "react-router-dom";
-import  axios  from "axios";
+
+import { useUser } from "../context/Context";
 export default function MartyrsDash() {
   const navigate = useNavigate();
-  const [ martyr, setMartyrData ] = useState( [] );
-  async function getMartyr() {
-  await axios.get( "https://syrianrevolution1.com/childData" ).then( ( result ) => setMartyrData(result.data.data) ).catch( ( error ) => {
-      console.log( error );
-    });
-  }
-  useEffect( () => {
-    getMartyr()
-  }, [] )
+  
+const {childDash} =  useUser()
   
 
   return (
@@ -29,8 +23,8 @@ export default function MartyrsDash() {
             </tr>
           </thead>
           <tbody>
-            {martyr.map((user, index) =>
-              user.category === "martyr" && user.isAccepted ===false ? (
+            {childDash.map((user, index) =>
+              user.category === "martyr" && user.isAccepted === false ? (
                 <tr key={index}>
                   <td>{user.name} </td>
                   <td>

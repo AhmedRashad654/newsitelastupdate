@@ -1,65 +1,72 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styles from "../styleDashboard/DisplayMartysDash.module.css";
 import axios from 'axios'
 import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFile, faFileZipper } from "@fortawesome/free-solid-svg-icons";
+import { ContextUser, useUser } from '../context/Context';
 export default function DisplayDestainessDash() {
-   const [martyrDisplay, setMartyrDataDisplay] = useState([]);
-   const [loading, setLoading] = useState(false);
-   const [loadingAccepted, setLoadingAccepted] = useState(false);
-   const navigate = useNavigate();
-   const { id } = useParams();
-   useEffect(() => {
-     async function getMartyr() {
-       await axios
-         .get(`https://syrianrevolution1.com/childData/${id}`)
-         .then((result) => setMartyrDataDisplay(result.data))
-         .catch((error) => {
-           console.log(error);
-         });
-     }
-     getMartyr();
-   }, [id]);
-console.log(martyrDisplay)
-   //////////////////handleDelete/////////////////
-   async function handleDeletePost() {
-     setLoading(true);
-     await axios
-       .delete(`https://syrianrevolution1.com/childData/${id}`, {
-         headers: {
-           Authorization: localStorage.getItem("token"),
-         },
-       })
-       .then( ( response ) => {
-         console.log(response);
-         if (response.data === "childData Deleted Successfully") {
-           setLoading(false);
-           navigate("/dashboard/detaineesdash");
-         }
-       })
-       .catch((error) => console.log(error));
-   }
-   /////////////////////////handleAccepted//////////////
-   async function handleAccepted() {
-     setLoadingAccepted(true);
-     await axios
-       .patch(`https://syrianrevolution1.com/childData/${id}`, null, {
-         headers: {
-           Authorization: localStorage.getItem("token"),
-         },
-       })
-       .then( ( response ) => {
-         
-         
-         if (response.data.success === "data updated successfully") {
-           setLoading(false);
-           navigate("/dashboard/detaineesdash");
-         }
-       
-       })
-       .catch((error) => console.log(error));
-   }
+  const { setOpenAlert, setOpenAlertStore } = useContext( ContextUser );
+  const {getMartyr} =  useUser()
+  const [martyrDisplay, setMartyrDataDisplay] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [loadingAccepted, setLoadingAccepted] = useState(false);
+  const navigate = useNavigate();
+  const { id } = useParams();
+  useEffect(() => {
+    async function getMartyr() {
+      await axios
+        .get(`https://syrianrevolution1.com/childData/${id}`)
+        .then((result) => setMartyrDataDisplay(result.data.childData))
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+    getMartyr();
+  }, [id]);
+  console.log(martyrDisplay);
+  ///////////////////////
+  function openImage(src) {
+    setOpenAlert(true);
+    setOpenAlertStore(src);
+  }
+  //////////////////handleDelete/////////////////
+  async function handleDeletePost() {
+    setLoading(true);
+    await axios
+      .delete(`https://syrianrevolution1.com/childData/${id}`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        if (response.data === "childData Deleted Successfully") {
+          setLoading(false);
+          navigate( "/dashboard/detaineesdash" );
+          getMartyr()
+        }
+      })
+      .catch((error) => console.log(error));
+  }
+  /////////////////////////handleAccepted//////////////
+  async function handleAccepted() {
+    setLoadingAccepted(true);
+    await axios
+      .patch(`https://syrianrevolution1.com/childData/${id}`, null, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((response) => {
+        if (response.data.success === "data updated successfully") {
+          setLoading(false);
+          navigate( "/dashboard/detaineesdash" );
+          getMartyr()
+        }
+      })
+      .catch((error) => console.log(error));
+  }
   return (
     <div className={styles.DisplayMartysDash}>
       {" "}
@@ -145,6 +152,11 @@ console.log(martyrDisplay)
                   src={`https://syrianrevolution1.com/imgData/${martyrDisplay.profileImage}`}
                   alt="martyr"
                   style={{ width: "100px" }}
+                  onClick={() => {
+                    openImage(
+                      `https://syrianrevolution1.com/imgData/${martyrDisplay.profileImage}`
+                    );
+                  }}
                 />
               ) : (
                 "لم تتم الاضافة"
@@ -154,7 +166,7 @@ console.log(martyrDisplay)
           <div className={styles.detailsright}>
             <h6> الوثائق و الملفات : </h6>
             <br />
-            <div style={{marginBottom:'30px'}}>
+            <div style={{ marginBottom: "30px" }}>
               {" "}
               {martyrDisplay.documents !== undefined &&
               martyrDisplay.documents !== "undefined"
@@ -167,6 +179,11 @@ console.log(martyrDisplay)
                           src={`https://syrianrevolution1.com/imgData/${doc}`}
                           alt="documents"
                           style={{ width: "100px" }}
+                          onClick={() => {
+                            openImage(
+                              `https://syrianrevolution1.com/imgData/${doc}`
+                            );
+                          }}
                         />
                       ) : (
                         ""
@@ -190,7 +207,10 @@ console.log(martyrDisplay)
                         ""
                       )}
                       {doc.slice(-4).toLowerCase() === ".mp4" ? (
-                        <video controls>
+                        <video
+                          controls
+                          style={{ width: "150px", height: "150px" }}
+                        >
                           <source
                             src={`https://syrianrevolution1.com/imgData/${doc}`}
                             type="video/mp4"

@@ -9,11 +9,7 @@ export default function NewsDetails() {
   const { id } = useParams();
        useEffect(() => {
          axios
-           .get(`https://syrianrevolution1.com/lists/${id}`, {
-             headers: {
-               Authorization: localStorage.getItem( 'token' )
-             },
-           })
+           .get(`https://syrianrevolution1.com/lists/${id}`)
            .then((result) => setSingle(result.data))
            .catch((error) => console.log(error));
        }, [id]);
@@ -37,7 +33,7 @@ export default function NewsDetails() {
             className="row"
             style={{ display: "flex", justifyContent: "space-between" }}
           >
-            <div className="col-md-6">
+            <div className="col-md-8">
               <h4 style={{ marginBottom: "30px" }}>
                 {" "}
                 العنوان : {single?.name}
@@ -46,11 +42,16 @@ export default function NewsDetails() {
                 src={`https://syrianrevolution1.com/postImages/${single?.selfImg}`}
                 alt="from single new"
                 style={{ width: "100%", marginBottom: "30px" }}
+                className="gimg"
               />
               <h6> التفاصيل : </h6>
-              <p> {single?.content}</p>
+              <p> {single?.content !== "undefined" ? single?.content : ""}</p>
               <h6>المحافظة : </h6>
-              <p>{single?.governorate}</p>
+              <p>
+                {single?.governorate !== "undefined"
+                  ? single.externalLinks
+                  : ""}
+              </p>
               <h6>رابط خارجي : </h6>
               <a
                 style={{ marginBottom: "40px", display: "inline-block" }}
@@ -58,16 +59,26 @@ export default function NewsDetails() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {single.externalLinks}
+                {single.externalLinks !== "undefined"
+                  ? single.externalLinks
+                  : ""}
               </a>
+              <div style={{ display: "flex", gap: "10px" ,marginBottom:'10px'}}>
+                <img
+                  src={`https://syrianrevolution1.com/images/${single?.user?.selfImg}`}
+                  alt="profile"
+                  style={{ width: "50px", height: "50px", borderRadius: "50%" }}
+                />
+                <p>{single?.user?.name}</p>
+              </div>
             </div>
             {/* /////////////////////// */}
-            <div className="lastSlider col-md-4">
-              <div className=" muted p-2 overflow-hidden">
+            <div className="lastSlider1 col-md-4">
+              <div className=" muted  overflow-hidden">
                 {archief.map((e) => (
                   <div
                     className="row border-bottom pb-2 pt-2 border-2 overflow-hidden"
-                    style={{ backgroundColor: "#fdfafa" }}
+                    style={{ backgroundColor: "#ECECEC" }}
                   >
                     <div className="col-md-4">
                       <img
@@ -78,7 +89,7 @@ export default function NewsDetails() {
                     </div>
                     <div className="col-md-8">
                       <p>
-                        { e?.name }
+                        {e?.name}
                         <br />
                         <button
                           className=" btu d-inline-block mx-1 px-3 rounded-3"

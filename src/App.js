@@ -46,7 +46,9 @@ import ProtectedRouted from './componantDashboard/ProtectedRouted.jsx';
 import ArchiefThourahUser from "./componantUser/ArchiefThouraUser/ArchiefThourahUser.jsx";
 import SpinnerFull from './componantUser/SpinnerFull.jsx';
 import {  ContextDashboardProvider } from './context/DashboardContext.jsx';
+import AllExcelDash from './componantDashboard/AllExcelDash.jsx';
 import ExeclSheet from './componantDashboard/ExeclSheet.jsx';
+import MainPageFirst from './componantUser/MainPageFirst/MainPageFirst.jsx';
 const HomeUser = lazy( () => import( './componantUser/HomeUser.jsx' ) );
 const HomeDashboard = lazy(() =>
   import("./componantDashboard/HomeDashboard.jsx")
@@ -60,7 +62,8 @@ export default function App() {
           <Suspense fallback={<SpinnerFull />}>
             <Routes>
               <Route path="/" element={<HomeUser />}>
-                <Route path="/" element={<MainPage />} />
+                <Route path="/" element={<MainPageFirst />} />
+                <Route path="/lastNews" element={<MainPage />} />
                 <Route path="archiefthoura" element={<ArchiefThourahUser />} />
                 <Route path="symbolthourauser" element={<SymbolThouraUser />} />
                 <Route path="blacklistuser" element={<BlackListUser />} />
@@ -124,10 +127,9 @@ export default function App() {
                   path="symbolsoftherevolution"
                   element={<SymbolsoftheRevolution />}
                 />
-                <Route
-                  path="excel"
-                  element={<ExeclSheet />}
-                />
+
+                <Route path="allexcel" element={<AllExcelDash />} />
+                <Route path="excel" element={<ExeclSheet />} />
                 <Route path="blacklist" element={<BlackListDash />} />
                 <Route path="crimessystem" element={<CrimesSystem />} />
                 <Route path="userDash" element={<UsersDash />} />

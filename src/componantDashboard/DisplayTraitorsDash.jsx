@@ -1,21 +1,24 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styles from "../styleDashboard/DisplayMartysDash.module.css";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { ContextUser, useUser } from "../context/Context";
 export default function DisplayTraitorsDash() {
+    const { setOpenAlert, setOpenAlertStore } = useContext(ContextUser);
   const [martyrDisplay, setMartyrDataDisplay] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [ loading, setLoading ] = useState( false );
+   const { getList } = useUser();
   const [loadingAccepted, setLoadingAccepted] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
   useEffect(() => {
     async function getMartyr() {
       await axios
-        .get(`https://syrianrevolution1.com/lists/${id}`,  {
-        headers: {
-          Authorization:localStorage.getItem("token"), 
-        },
-      })
+        .get(`https://syrianrevolution1.com/lists/${id}`, {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        })
         .then((result) => setMartyrDataDisplay(result.data))
         .catch((error) => {
           console.log(error);
@@ -23,7 +26,11 @@ export default function DisplayTraitorsDash() {
     }
     getMartyr();
   }, [id]);
-
+  //////////////
+  function openImage(src) {
+    setOpenAlert(true);
+    setOpenAlertStore(src);
+  }
   //////////////////handleDelete/////////////////
   async function handleDeletePost() {
     setLoading(true);
@@ -33,16 +40,17 @@ export default function DisplayTraitorsDash() {
           Authorization: localStorage.getItem("token"),
         },
       })
-      .then( ( response ) => {
+      .then((response) => {
         console.log(response);
         if (response.data === "list Deleted Successfully") {
           setLoading(false);
-          navigate("/dashboard/traitors");
+          navigate( "/dashboard/traitors" );
+          getList()
         }
       })
       .catch((error) => console.log(error));
   }
-  
+
   /////////////////////////handleAccepted//////////////
 
   async function handleAccepted() {
@@ -57,7 +65,8 @@ export default function DisplayTraitorsDash() {
         console.log(response);
         if (response.data.success === "data updated successfully") {
           setLoading(false);
-          navigate("/dashboard/traitors");
+          navigate( "/dashboard/traitors" );
+          getList()
         }
       })
       .catch((error) => console.log(error));
@@ -89,6 +98,11 @@ export default function DisplayTraitorsDash() {
                   src={`https://syrianrevolution1.com/postImages/${martyrDisplay.selfImg}`}
                   alt="trails"
                   style={{ width: "100px" }}
+                  onClick={() => {
+                    openImage(
+                      `https://syrianrevolution1.com/postImages/${martyrDisplay.selfImg}`
+                    );
+                  }}
                 />
               ) : (
                 "لم تتم الاضافة"

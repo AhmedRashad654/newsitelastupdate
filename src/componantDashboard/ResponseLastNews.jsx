@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styles from '../styleDashboard/DataDisplaySite.module.css'
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { ContextUser, useUser } from '../context/Context';
 export default function ResponseLastNews() {
   const [martyrDisplay, setMartyrDataDisplay] = useState([]);
-  const [ loading, setLoading ] = useState( false );
-  const [ loadingupdate, setLoadingUpdate ] = useState();
+  const [loading, setLoading] = useState(false);
+  // const [ loadingupdate, setLoadingUpdate ] = useState();
+  const { setOpenAlert, setOpenAlertStore } = useContext(ContextUser);
+  const { getListUser } = useUser();
   const navigate = useNavigate();
   const { id } = useParams();
   useEffect(() => {
@@ -23,6 +26,12 @@ export default function ResponseLastNews() {
     }
     getMartyr();
   }, [id]);
+  //////////////////////////////
+  ///////////////////////
+  function openImage(src) {
+    setOpenAlert(true);
+    setOpenAlertStore(src);
+  }
   //////////////////handleDelete/////////////////
   async function handleDeletePost() {
     setLoading(true);
@@ -32,11 +41,12 @@ export default function ResponseLastNews() {
           Authorization: localStorage.getItem("token"),
         },
       })
-      .then( ( response ) => {
-        console.log(response)
+      .then((response) => {
+        console.log(response);
         if (response.data === "list Deleted Successfully") {
           setLoading(false);
           navigate("/dashboard/dataDisplaySite");
+          getListUser();
         }
       })
       .catch((error) => console.log(error));
@@ -66,6 +76,11 @@ export default function ResponseLastNews() {
                   src={`https://syrianrevolution1.com/postImages/${martyrDisplay?.selfImg}`}
                   alt="trails"
                   style={{ width: "100px" }}
+                  onClick={() => {
+                    openImage(
+                      `https://syrianrevolution1.com/postImages/${martyrDisplay.selfImg}`
+                    );
+                  }}
                 />
               ) : (
                 "لم تتم الاضافة"
@@ -76,8 +91,13 @@ export default function ResponseLastNews() {
             <h6> روابط خارجية : </h6>{" "}
             {martyrDisplay?.externalLinks !== undefined &&
             martyrDisplay?.externalLinks !== "undefined" ? (
-                <a href={ `https://${martyrDisplay?.externalLinks}` } target='blank'> { martyrDisplay?.externalLinks}</a>
-
+              <a
+                href={`https://${martyrDisplay?.externalLinks}`}
+                target="blank"
+              >
+                {" "}
+                {martyrDisplay?.externalLinks}
+              </a>
             ) : (
               "لم تتم الاضافة"
             )}{" "}
@@ -106,13 +126,13 @@ export default function ResponseLastNews() {
             navigate(`/dashboard/dataDisplaySiteupdate/${martyrDisplay._id}`)
           }
         >
-          {loadingupdate ? (
+          {/* {loadingupdate ? (
             <div className="spinner-border text-secondary" role="status">
               <span className="sr-only"></span>
             </div>
-          ) : (
-            "تعديل"
-          )}
+          ) : ( */}
+          تعديل
+          {/* )} */}
         </button>
         <button className="btn btn-danger" onClick={handleDeletePost}>
           {loading ? (

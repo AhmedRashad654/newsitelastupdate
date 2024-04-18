@@ -32,12 +32,12 @@
   }
 .formsForget{
     width: 45%;
-    height: 55%;
+    height: 70%;
     background-color: #F7F7F7;
     margin: auto;
     border-radius: 5px;
     overflow: auto;
-    transform: translateY(30%);
+    transform: translateY(20%);
 }
 .formsSuccessRegister{
     width: 30%;
@@ -55,7 +55,7 @@
    
 }
 .formsLogin{
-    width: 60%;
+    width: 45%;
     height: 75%;
     background-color: #F7F7F7;
     margin: auto;
@@ -133,8 +133,9 @@ transform: translateY(25px);
     font-size: 12px;
 }
 .inform input::placeholder{
-    font-size: 12px;
+    font-size: 9px;
 }
+
 .inpi2 p{
     font-size: 10px;
     color: #3035A1;
@@ -200,7 +201,7 @@ input[type="file"] {
 }
 .btnInpu button:first-child{
     border: none;
-    width: 120px;
+    width: 150px;
     padding: 4px 20px;
     background-color: #3035A1;
     color: white;
@@ -247,7 +248,13 @@ input[type="file"] {
     }
 }
 
+
 .alert{
     font-size: 10px;
     font-weight: 50px;
+}
+.inform3{
+    transform: translateY(20px);
+    width: 60%;
+    margin: auto;
 }

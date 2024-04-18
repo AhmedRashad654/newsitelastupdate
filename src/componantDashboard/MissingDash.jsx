@@ -1,23 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import style from "../styleDashboard/MartyrsDash.module.css";
 import { useNavigate } from "react-router-dom";
-import axios from 'axios'
+import { useUser } from '../context/Context';
+
 export default function MissingDash() {
     const navigate = useNavigate();
-    const [martyr, setMartyrData] = useState([]);
-    async function getMartyr() {
-      await axios
-        .get("https://syrianrevolution1.com/childData")
-        .then((result) => setMartyrData(result.data.data))
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-    useEffect(() => {
-      getMartyr();
-    }, []);
+   const { childDash } = useUser();
 
-    console.log(martyr);
+   
   return (
     <div className={style.MartyrsDash}>
       <div className={`headDashboard`}>
@@ -32,7 +22,7 @@ export default function MissingDash() {
             </tr>
           </thead>
           <tbody>
-            {martyr.map((user, index) =>
+            {childDash.map((user, index) =>
               user.category === "missing" && user.isAccepted === false ? (
                 <tr key={index}>
                   <td>{user.name} </td>

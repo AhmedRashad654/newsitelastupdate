@@ -1,36 +1,12 @@
 import styles from '../../styleDashboard/DataDisplaySite.module.css';
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useUser } from '../../context/Context';
 export default function DataSiteSymbol() {
   const navigate = useNavigate();
-  const [ lastNews, setLastNews ] = useState( [] );
+const {lastNews} = useUser()
 
-  useEffect(() => {
-    async function getLastNews() {
-      axios
-        .get("https://syrianrevolution1.com/lists/")
-        .then((result) => {
-          setLastNews(result.data.data);
-        })
-        .catch((error) => console.log(error));
-    }
-    getLastNews();
-  }, []);
  
-  //////////////////////
-     const [takrem, setTakrem] = useState([]);
-    useEffect(() => {
-      async function getLastNews() {
-        axios
-          .get("https://syrianrevolution1.com/lists/userView")
-          .then((result) => {
-            setTakrem(result.data.data);
-          })
-          .catch((error) => console.log(error));
-      }
-      getLastNews();
-    }, []);
+
   return (
     <div className={styles.DataSiteLastNews}>
       <div className={styles.allUser}>
@@ -39,8 +15,8 @@ export default function DataSiteSymbol() {
             <thead>
               <tr>
                 <th> عنوان الخبر</th>
-                <th>البيانات المنشورة</th>
                 <th>التصنيف</th>
+                <th>البيانات المنشورة</th>
               </tr>
             </thead>
             <tbody>
@@ -66,7 +42,7 @@ export default function DataSiteSymbol() {
                     ""
                   )
                 )}
-              {takrem &&
+              {lastNews &&
                 lastNews.map((user, index) =>
                   user.category === "takrem" ? (
                     <tr key={index}>

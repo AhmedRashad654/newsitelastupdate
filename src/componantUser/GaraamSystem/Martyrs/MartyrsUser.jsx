@@ -42,7 +42,7 @@ console.log(martyr)
                     <img
                       src={`https://syrianrevolution1.com/imgData/${e.profileImage}`}
                       alt="martyr"
-                      className=" w-100 rounded-3"
+                      className=" w-100 rounded-3 fimg"
                     />
                   </div>
                   <p>

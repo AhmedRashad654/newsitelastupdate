@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState ,useContext} from 'react'
 import styles from "../styleDashboard/DisplayMartysDash.module.css";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { ContextUser, useUser } from "../context/Context";
 export default function DisplayHonorCard() {
+  const { setOpenAlert, setOpenAlertStore } = useContext( ContextUser );
+   const { getList } = useUser();
     const [martyrDisplay, setMartyrDataDisplay] = useState([]);
     const [loading, setLoading] = useState(false);
     const [loadingAccepted, setLoadingAccepted] = useState(false);
@@ -23,7 +26,12 @@ export default function DisplayHonorCard() {
       }
       getMartyr();
     }, [id]);
-console.log(martyrDisplay)
+  console.log( martyrDisplay )
+  //////////////
+    function openImage(src) {
+      setOpenAlert(true);
+      setOpenAlertStore(src);
+    }
     //////////////////handleDelete/////////////////
     async function handleDeletePost() {
       setLoading(true);
@@ -36,7 +44,8 @@ console.log(martyrDisplay)
         .then((response) => {
           if (response.data === "list Deleted Successfully") {
             setLoading(false);
-            navigate("/dashboard/warcriminals");
+            navigate( "/dashboard/warcriminals" );
+            getList()
           }
         })
         .catch((error) => console.log(error));
@@ -55,7 +64,8 @@ console.log(martyrDisplay)
           console.log( response );
           if (response.data.success === "data updated successfully") {
             setLoading(false);
-            navigate("/dashboard/warcriminals");
+            navigate( "/dashboard/warcriminals" );
+            getList()
           }
           console.log(response);
         })
@@ -65,7 +75,7 @@ console.log(martyrDisplay)
     <div className={styles.DisplayMartysDash}>
       {" "}
       <div className={`headDashboard`}>
-        <p>البيانات المستلمة /  مجرمين الحرب / بيانات المجرم</p>
+        <p>البيانات المستلمة / مجرمين الحرب / بيانات المجرم</p>
       </div>
       <div className={styles.details}>
         <div className={styles.allDetailseRight}>
@@ -86,6 +96,11 @@ console.log(martyrDisplay)
                   src={`https://syrianrevolution1.com/postImages/${martyrDisplay.selfImg}`}
                   alt="trails"
                   style={{ width: "100px" }}
+                  onClick={() => {
+                    openImage(
+                      `https://syrianrevolution1.com/postImages/${martyrDisplay.selfImg}`
+                    );
+                  }}
                 />
               ) : (
                 "لم تتم الاضافة"

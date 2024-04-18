@@ -1,106 +1,11 @@
-// import {React,useContext } from 'react';
-// import styles from '../AddSahedUser/AddShahed.module.css'
-// import { ContextUser } from '../../context/Context';
-// export default function AddCreditTakrem() {
-
-//   const {openAuth, setOpenAuth}= useContext(ContextUser)
-
-//   return (
-//     <div>
-//       <form action="" className={styles.form}>
-//         <div className={styles.headForm}>
-//           <div className={styles.input}>
-//             <div className={styles.inp1}>
-//               <label htmlFor="">اسم صاحب البطاقة</label>
-//               <input
-//                 type="text"
-//                 placeholder="اسم المعتقل"
-//                 className="form-control"
-//               />
-//             </div>
-//             <div className={ styles.inp1 }>
-//               asd
-//               <label htmlFor=""> اسم والد صاحب البطاقة</label>
-//               <input
-//                 type="text"
-//                 placeholder="  اسم الاب"
-//                 className="form-control"
-//               />
-//             </div>
-//           </div>
-//           <div className={styles.input}>
-//             <div className={styles.inp1}>
-//               <label htmlFor=""> كنية صاحب البطاقة</label>
-//               <input
-//                 type="text"
-//                 placeholder=" كنية المعتقل"
-//                 className="form-control"
-//               />
-//             </div>
-//             <div className={styles.inp1}>
-//               <label htmlFor=""> اسم الام</label>
-//               <input
-//                 type="text"
-//                 placeholder=" اسم الام "
-//                 className="form-control"
-//               />
-//             </div>
-//           </div>
-//           <div className={styles.input}>
-//             <div className={styles.inp1}>
-//               <label htmlFor=""> تاريخ ميلاد صاحب البطاقة</label>
-//               <input
-//                 type="date"
-//                 placeholder="  المواليد"
-//                 className="form-control"
-//               />
-//             </div>
-//             <div className={styles.inp1}>
-//               <p style={{ marginBottom: "5px", fontSize: "12px" }}>
-//                 الوثائق والملفات
-//               </p>
-//               <label htmlFor="file-upload" className={styles.customfileupload}>
-//                 اختيار الملف
-//               </label>
-//               <input type="file" id="file-upload" />
-//             </div>
-//           </div>
-//           <div className={styles.input1}>
-//             <label htmlFor="">شرح مفصل</label>
-//             <textarea name="" id="" className="form-control"></textarea>
-//           </div>
-//         </div>
-//       </form>
-//       <div className={styles.btnbottom}>
-//         <button
-//           className={`add`}
-//           style={{ color: "white", backgroundColor: "green" }}
-//           onClick={()=>setOpenAuth('successaddinform')}
-//         >
-//           اضافة بيانات
-//         </button>
-//       </div>
-//     </div>
-//   );
-// }
-
-
-
-
-
-
-
-
-
-
-
 import { React, useContext, useState } from "react";
 import styles from "../AddSahedUser/AddShahed.module.css";
 import { ContextUser } from "../../context/Context";
 import Joi from "joi";
 
 export default function AddMogramUser() {
-  const { setOpenAuth } = useContext(ContextUser);
+  const { setOpenAuth, getSingleUser, checkConfition } =
+    useContext(ContextUser);
   //////////////////////////////////////////////////////////
 
   const [addData, setAddData] = useState({
@@ -144,43 +49,49 @@ export default function AddMogramUser() {
     if (responseValidateUser.error) {
       setErrorListUser([responseValidateUser.error.details]);
     } else {
-      setErrorListUser("");
-      setSuccessAdd(false);
-      const formData = new FormData();
-      formData.append("name", addData.name);
-      formData.append("selfImg", imageProfile);
-      formData.append("externalLinks", addData.externalLinks);
-      formData.append("governorate", addData.governorate);
-      formData.append("category", addData.category);
-      formData.append("content", addData.content);
+      await getSingleUser();
+      if ( checkConfition === true ) {
+             setErrorListUser("");
+             setSuccessAdd(false);
+             const formData = new FormData();
+             formData.append("name", addData.name);
+             formData.append("selfImg", imageProfile);
+             formData.append("externalLinks", addData.externalLinks);
+             formData.append("governorate", addData.governorate);
+             formData.append("category", addData.category);
+             formData.append("content", addData.content);
 
-      try {
-        setLoading(true);
-        const response = await fetch(
-          `https://syrianrevolution1.com/lists/${localStorage.getItem(
-            "idUserLogin"
-          )}`,
-          {
-            method: "POST",
-            body: formData,
-            headers: {
-              Authorization: localStorage.getItem("token"),
-            },
-          }
-        );
-        const result = await response.json();
-        console.log(result);
-        setLoading(false);
-        if (result._id) {
-          setSuccessAdd(true);
-          setErrorBackUser(null);
-          setErrorListUser(null);
-        } else {
-          setErrorBackUser(result);
-        }
-      } catch (error) {
-        console.error(error);
+             try {
+               setLoading(true);
+               const response = await fetch(
+                 `https://syrianrevolution1.com/lists/${localStorage.getItem(
+                   "idUserLogin"
+                 )}`,
+                 {
+                   method: "POST",
+                   body: formData,
+                   headers: {
+                     Authorization: localStorage.getItem("token"),
+                   },
+                 }
+               );
+               const result = await response.json();
+               console.log(result);
+               setLoading(false);
+               if (result._id) {
+                 setSuccessAdd(true);
+                 setErrorBackUser(null);
+                 setErrorListUser(null);
+               } else {
+                 setErrorBackUser(result);
+               }
+             } catch (error) {
+               console.error(error);
+             }
+      } else {
+        setOpenAuth('faild')
       }
+ 
     }
   }
 
@@ -192,7 +103,7 @@ export default function AddMogramUser() {
             <p
               key={index}
               className="alert alert-secondary alerthemself"
-              style={{ transform: "translateY(0)", width: "100%" }}
+              style={{ transform: "translateY(20px)", width: "90%" }}
             >
               {error[index].message}
             </p>

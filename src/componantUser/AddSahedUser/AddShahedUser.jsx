@@ -3,7 +3,8 @@ import styles from './AddShahed.module.css';
 import { ContextUser } from '../../context/Context';
 import Joi from 'joi';
 export default function AddShahedUser() {
-  const { setOpenAuth } = useContext( ContextUser )
+  const { setOpenAuth, getSingleUser, checkConfition } =
+    useContext(ContextUser);
   ///////////////////////////////////////////////////
     ///////////////handlechange//////////////
     const [addData, setAddData] = useState({
@@ -22,7 +23,7 @@ export default function AddShahedUser() {
     ////////////handle documents///////////
     const [document, setDocument] = useState("");
     function handleChangeDocuments(e) {
-      setDocument(e.target.files[0]);
+      setDocument(e.target.files);
     }
     //////////handle change //////////////
     function handlechange(e) {
@@ -59,56 +60,82 @@ export default function AddShahedUser() {
       });
       return schema.validate(addData, { abortEarly: false });
     }
+      console.log(checkConfition);
 
     async function handleSubmit(e) {
       e.preventDefault();
+  
       let responseValidateUser = validationAddUser();
       if (responseValidateUser.error) {
         setErrorListUser([responseValidateUser.error.details]);
       } else {
-        setErrorListUser("");
-        setSuccessAdd(false);
-        const formData = new FormData();
-        formData.append("category", addData.category);
-        formData.append("name", addData.name);
-        formData.append("profileImage", imageProfile);
-        formData.append("documents", document);
-        formData.append("nickname", addData.nickname);
-        formData.append("dateOfBirth", addData.dateOfBirth);
-        formData.append("responsibleAuthority", addData.responsibleAuthority);
-        formData.append("governorate", addData.governorate);
-        formData.append("fatherName", addData.fatherName);
-        formData.append("motherName", addData.motherName);
-        formData.append("place", addData.place);
-        formData.append("externalLinks", addData.externalLinks);
-        formData.append("details", addData.details);
-        try {
-          setLoading(true);
-          const response = await fetch(
-            `https://syrianrevolution1.com/childData/${localStorage.getItem(
-              "idUserLogin"
-            )}`,
-            {
-              method: "POST",
-              body: formData,
-              headers: {
-                Authorization: localStorage.getItem("token"),
-              },
-            }
-          );
-          const result = await response.json();
-          console.log(result);
-          setLoading(false);
-          if (result._id) {
-            setSuccessAdd(true);
-            setErrorBackUser(null);
-            setErrorListUser(null);
-          } else {
-            setErrorBackUser(result);
-          }
-        } catch (error) {
-          console.error(error);
+  await getSingleUser();
+        
+        if ( checkConfition === true ) {
+                  setErrorListUser("");
+                  setSuccessAdd(false);
+                  const formData = new FormData();
+                  formData.append("category", addData.category);
+                  formData.append("name", addData.name);
+                  formData.append("profileImage", imageProfile);
+                  if (Array.isArray(document)) {
+                    document.forEach((file) => {
+                      formData.append("documents", file);
+                    });
+                  } else if (document instanceof FileList) {
+                    for (let i = 0; i < document.length; i++) {
+                      formData.append("documents", document[i]);
+                    }
+                  }
+                  formData.append("nickname", addData.nickname);
+                  if (
+                    addData.dateOfBirth !== "" &&
+                    addData.dateOfBirth !== undefined &&
+                    addData.dateOfBirth !== null
+                  ) {
+                    formData.append("dateOfBirth", addData.dateOfBirth);
+                  }
+                  formData.append(
+                    "responsibleAuthority",
+                    addData.responsibleAuthority
+                  );
+                  formData.append("governorate", addData.governorate);
+                  formData.append("fatherName", addData.fatherName);
+                  formData.append("motherName", addData.motherName);
+                  formData.append("place", addData.place);
+                  formData.append("externalLinks", addData.externalLinks);
+                  formData.append("details", addData.details);
+                  try {
+                    setLoading(true);
+                    const response = await fetch(
+                      `https://syrianrevolution1.com/childData/${localStorage.getItem(
+                        "idUserLogin"
+                      )}`,
+                      {
+                        method: "POST",
+                        body: formData,
+                        headers: {
+                          Authorization: localStorage.getItem("token"),
+                        },
+                      }
+                    );
+                    const result = await response.json();
+                    console.log(result);
+                    setLoading(false);
+                    if (result._id) {
+                      setSuccessAdd(true);
+                      setErrorBackUser(null);
+                      setErrorListUser(null);
+                    } else {
+                      setErrorBackUser(result);
+                    }
+                  } catch (error) {
+                    console.error(error);
+                  }
+        } else {
+          setOpenAuth('faild')
         }
+
       }
     }
   return (

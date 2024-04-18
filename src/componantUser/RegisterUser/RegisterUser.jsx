@@ -121,7 +121,7 @@ export default function RegisterUser() {
               style={{
                 position: "absolute",
                 top: "-20%",
-                right: 0,
+                right: "-25px",
                 color: "red",
                 cursor: "pointer",
               }}
@@ -148,10 +148,11 @@ export default function RegisterUser() {
                   className="form-control"
                   onChange={handlechange}
                   name="username"
+                  placeholder="اسم المستخدم"
                 />
                 {errorBackUser &&
-                  errorBackUser?.message ===
-                    'E11000 duplicate key error collection: test.users index: username_1 dup key: { username: "ahmed" }' && (
+                  errorBackUser?.message.includes('E11000 duplicate key error collection: test.users index: username_1 dup key') 
+                     && (
                     <p className={`error`}>هذا الاسم موجود من قبل</p>
                   )}
               </div>
@@ -162,6 +163,7 @@ export default function RegisterUser() {
                   className="form-control"
                   onChange={handlechange}
                   name="phone"
+                  placeholder=" رقم الهاتف"
                 />
               </div>
             </div>
@@ -173,6 +175,7 @@ export default function RegisterUser() {
                   className="form-control"
                   onChange={handlechange}
                   name="name"
+                  placeholder=" الاسم بالكامل"
                 />
               </div>
               <div className={style.inpi}>
@@ -182,6 +185,7 @@ export default function RegisterUser() {
                   className="form-control"
                   onChange={handlechange}
                   name="government"
+                  placeholder=" المحافظة"
                 />
               </div>
             </div>
@@ -193,6 +197,7 @@ export default function RegisterUser() {
                   className="form-control"
                   onChange={handlechange}
                   name="email"
+                  placeholder=" الايميل"
                 />
                 {errorBackUser && errorBackUser === "email already exist" && (
                   <p className={`error`}>هذا الايميل موجود من قبل</p>
@@ -205,6 +210,7 @@ export default function RegisterUser() {
                   className="form-control"
                   name="password"
                   onChange={handlechange}
+                  placeholder="  كلمة المرور"
                 />
               </div>
             </div>
@@ -220,6 +226,7 @@ export default function RegisterUser() {
                   className="form-control "
                   onChange={handlechange}
                   name="key"
+                  placeholder=" رمز الدخول"
                 />
               </div>
             </div>
@@ -250,7 +257,7 @@ export default function RegisterUser() {
             >
               <button
                 className="btn btn-primary"
-                style={{ width: "30%", margin: "auto" }}
+                style={{ width: "30%", margin: "auto" ,padding:'10px 0'}}
                 onClick={handleSubmit}
               >
                 {loading ? (

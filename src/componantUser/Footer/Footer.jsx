@@ -12,31 +12,49 @@ export default function Footer() {
             <div className="col-md-6">
               <div className="row gy-3">
                 <div className="col-md-4 col-sm-4 x-sm">
-                  <NavLink className="nav-link">الرئيسية</NavLink>
+                  <NavLink className="nav-link" to="/">
+                    الرئيسية
+                  </NavLink>
                 </div>
                 <div className="col-md-4 col-sm-4 x-sm">
-                  <NavLink className="nav-link">رموز الثورة</NavLink>
+                  <NavLink className="nav-link" to="/symbolthourauser">
+                    رموز الثورة
+                  </NavLink>
                 </div>
                 <div className="col-md-4 col-sm-4 x-sm">
-                  <NavLink className="nav-link">جرائم النظام</NavLink>
+                  <NavLink className="nav-link" to="graamsystem">
+                    جرائم النظام
+                  </NavLink>
                 </div>
                 <div className="col-md-4 col-sm-4 x-sm">
-                  <NavLink className="nav-link">أخر الاخبار</NavLink>
+                  <NavLink className="nav-link" to="/lastNews">
+                    أخر الاخبار
+                  </NavLink>
                 </div>
                 <div className="col-md-4 col-sm-4 x-sm">
-                  <NavLink className="nav-link">القائمة السوداء</NavLink>
+                  <NavLink className="nav-link" to="/blacklistuser">
+                    القائمة السوداء
+                  </NavLink>
                 </div>
                 <div className="col-md-4 col-sm-4 x-sm">
-                  <NavLink className="nav-link">جرائم قسد</NavLink>
+                  <NavLink className="nav-link" to="/graemqasad">
+                    جرائم قسد
+                  </NavLink>
                 </div>
                 <div className="col-md-4 col-sm-4 x-sm">
-                  <NavLink className="nav-link">أرشيف الثورة</NavLink>
+                  <NavLink className="nav-link" to="/archiefthoura">
+                    أرشيف الثورة
+                  </NavLink>
                 </div>
                 <div className="col-md-4 col-sm-4 x-sm">
-                  <NavLink className="nav-link">مجرمي الحرب</NavLink>
+                  <NavLink className="nav-link" to="/blacklistuser">
+                    مجرمي الحرب
+                  </NavLink>
                 </div>
                 <div className="col-md-4 col-sm-4 x-sm">
-                  <NavLink className="nav-link">جرائم داعش</NavLink>
+                  <NavLink className="nav-link" to="/graemdashuser">
+                    جرائم داعش
+                  </NavLink>
                 </div>
               </div>
             </div>
@@ -44,11 +62,37 @@ export default function Footer() {
               <div className="contact-footer text-center">
                 <p className="mb-3 p-0">تواصل معنا</p>
                 <div className="social-icons-footer d-flex align-items-center">
-                  <i className="fa-brands fa-whatsapp ms-3"></i>
-                  <i className="fa-brands fa-instagram ms-3"></i>
-                  <i className="fa-brands fa-tiktok ms-3"></i>
-                  <i className="fa-brands fa-square-facebook ms-3"></i>
-                  <i className="fa-brands fa-square-twitter "></i>
+                  <a
+                    href="https://api.whatsapp.com/send/?phone=4917676000731"
+                    className="text-white"
+                  >
+                    {" "}
+                    <i className="fa-brands fa-whatsapp ms-3"></i>
+                  </a>
+                  <a
+                    href="https://www.instagram.com/syrian.revolution7"
+                    className="text-white"
+                  >
+                    <i className="fa-brands fa-instagram ms-3"></i>
+                  </a>
+                  <a
+                    href="https://www.tiktok.com/@syrian.revolution7"
+                    className="text-white"
+                  >
+                    <i className="fa-brands fa-tiktok ms-3"></i>
+                  </a>
+                  <a
+                    href="https://www.facebook.com/Syrian7Revolution"
+                    className="text-white"
+                  >
+                    <i className="fa-brands fa-square-facebook ms-3"></i>
+                  </a>
+                  <a
+                    href="https://twitter.com/syrian_revolut7"
+                    className="text-white"
+                  >
+                    <i className="fa-brands fa-square-twitter ms-3"></i>
+                  </a>
                 </div>
               </div>
             </div>

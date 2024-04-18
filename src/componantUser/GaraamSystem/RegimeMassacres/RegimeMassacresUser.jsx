@@ -8,11 +8,15 @@ export default function RegimeMassacresUser() {
     const [ mascer, setMascer ] = useState( [] );
     useEffect( () => {
         async function getMascers() {
-            await axios.get( "https://syrianrevolution1.com/massacres" ).then( ( result ) => {
+            await axios
+              .get("https://syrianrevolution1.com/massacres/userView")
+              .then((result) => {
                 setMascer(
-                  result.data.massacres.filter((e) => e.responsibleAuthority === 'system')
-                );     
-        });
+                  result?.data?.data.filter(
+                    (e) => e.responsibleAuthority === "system"
+                  )
+                );
+              });
         }
         getMascers()
     }, [] )
