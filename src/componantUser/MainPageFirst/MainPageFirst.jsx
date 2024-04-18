@@ -87,8 +87,8 @@ export default function MainPageFirst() {
                   {lastNews
                     .filter((e) => e.category === "mozaharat")
                     .slice(0, 4)
-                    .map((e) => (
-                      <div className="col-md-3">
+                    .map((e,i) => (
+                      <div className="col-md-3" key={i}>
                         <div className="news">
                           <div className="item">
                             <div className="image">
@@ -137,8 +137,8 @@ export default function MainPageFirst() {
                   {lastNews
                     .filter((e) => e.category === "maarek")
                     .slice(0, 4)
-                    .map((e) => (
-                      <div className="col-md-3">
+                    .map((e,i) => (
+                      <div className="col-md-3" key={i}>
                         <div className="news">
                           <div className="item">
                             <div className="image">
@@ -187,8 +187,8 @@ export default function MainPageFirst() {
                   {lastNews
                     .filter((e) => e.category === "symbols")
                     .slice(0, 4)
-                    .map((e) => (
-                      <div className="col-md-3">
+                    .map((e,i) => (
+                      <div className="col-md-3" key={i}>
                         <div className="news">
                           <div className="item">
                             <div className="image">
