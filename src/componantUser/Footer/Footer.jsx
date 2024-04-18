@@ -22,7 +22,7 @@ export default function Footer() {
                   </NavLink>
                 </div>
                 <div className="col-md-4 col-sm-4 x-sm">
-                  <NavLink className="nav-link" to="graamsystem">
+                  <NavLink className="nav-link" to="/graamsystem">
                     جرائم النظام
                   </NavLink>
                 </div>

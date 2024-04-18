@@ -82,7 +82,7 @@ function ContextProvider({ children }) {
   }
   useEffect( () => {
       getMartyr();
-    }, [] );
+  }, [] );
   //////////listDashMogram///////////
   const [ listDash, setListDash ] = useState( [] )
       async function getList() {

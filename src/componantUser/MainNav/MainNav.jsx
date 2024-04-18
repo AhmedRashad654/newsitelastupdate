@@ -214,29 +214,29 @@ export default function MainNav() {
                   الإشعارات الجديدة
                 </h4>
                 <p className=" position-relative bg-white p-2 pe-5 m-0 mb-2">
-                  {notification && notification?.notification}
+                  {notification ? notification?.notification:''}
                 </p>
-                {notification?.child &&
-                  notification?.child?.length &&
+                {(notification?.child &&
+                  notification?.child?.length )?
                   notification?.child.map((e) => (
                     <p className=" position-relative bg-white p-2 pe-5 m-0 mb-2">
                       {e?.notification}
                     </p>
-                  ))}
-                {notification?.lists &&
-                  notification?.lists?.length &&
+                  )):''}
+                {(notification?.lists &&
+                  notification?.lists?.length )?
                   notification?.lists.map((e) => (
                     <p className=" position-relative bg-white p-2 pe-5 m-0 mb-2">
                       {e?.notification}
                     </p>
-                  ))}
-                {notification?.massacres &&
-                  notification?.massacres?.length &&
+                  )):''}
+                {(notification?.massacres &&
+                  notification?.massacres?.length )?
                   notification?.massacres.map((e) => (
                     <p className=" position-relative bg-white p-2 pe-5 m-0 mb-2">
                       {e?.notification}
                     </p>
-                  ))}
+                  )):''}
               </div>
             </div>
           </div>

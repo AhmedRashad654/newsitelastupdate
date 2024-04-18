@@ -9,7 +9,7 @@ export default function AlertLogout({ src }) {
   return (
     <div className={style.RegisterUser}>
       <form
-        className={style.formsSuccessRegister}
+        className={style.formsSuccessRegister1}
         style={{ transform: "translateY(130px)",minHeight:'40%',display:'flex'}}
       >
         <div className={style.informSuccess}>

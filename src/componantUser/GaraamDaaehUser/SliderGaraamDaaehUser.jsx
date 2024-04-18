@@ -1,31 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Slider from "react-slick";
 import "./SliderGramaamDaaeh.css";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../../context/Context";
 export default function SliderGaraemDaaehUser() {
   const navigate = useNavigate();
-  const [mascer, setMascer] = useState([]);
-  useEffect(() => {
-    async function getMascers() {
-      await axios
-        .get("https://syrianrevolution1.com/massacres/userView")
-        .then((result) => {
-          setMascer(
-            result.data.data.filter(
-              (e) => e.responsibleAuthority === "daaeh"
-            )
-          );
-        });
-    }
-    getMascers();
-  }, []);
+  const {masc} = useUser()
   function SampleNextArrow(props) {
     const { className, style, onClick } = props;
     return (
       <div
         className={className}
-        style={{ ...style, display: "block" }}
+        style={{ ...style, display: "block",color:'gray' }}
         onClick={onClick}
       />
     );
@@ -35,14 +21,14 @@ export default function SliderGaraemDaaehUser() {
     return (
       <div
         className={className}
-        style={{ ...style, display: "block" }}
+        style={{ ...style, display: "block",color:'gray' }}
         onClick={onClick}
       />
     );
   }
   let settings = {
     dots: false,
-    infinite: true,
+    infinite: masc.filter((e) => e.responsibleAuthority === "daaeh").length > 1?true:false,
     speed: 500,
     slidesToShow: 4,
     slidesToScroll: 4,
@@ -71,8 +57,8 @@ export default function SliderGaraemDaaehUser() {
       {
         breakpoint: 480,
         settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
+          slidesToShow: 1,
+          slidesToScroll: 1,
         },
       },
     ],
@@ -82,28 +68,31 @@ export default function SliderGaraemDaaehUser() {
       <div className="container">
         <div className="slider-container px-4 position-relative">
           <Slider {...settings}>
-            {mascer &&
-              mascer.map((e, i) => (
-                <div key={i} className="slide mx-2 text-center">
-                  <div className="image mb-2 mx-2 ">
-                    <img
-                      src={`https://syrianrevolution1.com/postImages/${e.profileImage}`}
-                      alt="mascers"
-                      className=" w-100 slide-image"
-                    />
+            {masc &&
+              masc
+                .filter((e) => e.responsibleAuthority === "daaeh")
+                .map((e, i) => (
+                  <div key={i} className="slide mx-2 text-center">
+                    <div className="image mb-2 mx-2 ">
+                      <img
+                        src={`https://syrianrevolution1.com/postImages/${e.profileImage}`}
+                        alt="mascers"
+                        className=" w-100 slide-image"
+                        style={{height:'250px'}}
+                      />
+                    </div>
+                    <p className="px-2">
+                      {e?.title ? e?.title : ""}
+                      <br />
+                      <button
+                        className="btu d-inline-block mx-1 px-3 rounded-3"
+                        onClick={() => navigate(`/NewsDetailsMascers/${e._id}`)}
+                      >
+                        المزيد
+                      </button>
+                    </p>
                   </div>
-                  <p className="px-2">
-                    {e?.title ? e?.title : ""}
-                    <br />
-                    <button
-                      className="btu d-inline-block mx-1 px-3 rounded-3"
-                      onClick={() => navigate(`/NewsDetailsMascers/${e._id}`)}
-                    >
-                      المزيد
-                    </button>
-                  </p>
-                </div>
-              ))}
+                ))}
           </Slider>
         </div>
       </div>

@@ -10,11 +10,11 @@ import {
   faReceipt,
   faUserGroup,
 } from '@fortawesome/free-solid-svg-icons';
-import { ContextUser } from '../context/Context';
+import { ContextUser, useUser } from '../context/Context';
 import AlertLogout from '../componantDashboard/AlertImageDash/AlertLogout'
 export default function LeftSideBar() {
   const [ isMobile, setIsMobile ] = useState( false );
- 
+  const {numberMogrem} =  useUser()
    const { role, setOpenLogout, openLogout } = useContext(ContextUser);
   useEffect(() => {
     const handleResize = () => {
@@ -95,10 +95,14 @@ export default function LeftSideBar() {
             <NavLink to="/dashboard/missingdash">
               {isMobile ? "مف" : "مفقودين"}
             </NavLink>
-            <NavLink to="/dashboard/warcriminals">
-              {" "}
-              {isMobile ? "مج" : "  مجرمين حرب"}
-            </NavLink>
+            <div>
+              <NavLink to="/dashboard/warcriminals">
+                {" "}
+                {isMobile ? "مج" : "  مجرمين حرب"}
+              </NavLink>
+              <span>{numberMogrem}</span>
+            </div>
+
             <NavLink to="/dashboard/traitors">
               {isMobile ? "خ" : "خونة"}
             </NavLink>
@@ -152,14 +156,14 @@ export default function LeftSideBar() {
         </div>
         <div className={style.secondFourth}>
           <div className={style.headsecondsecond}>
-            <Link  onClick={() => setOpenLogout(true)}>
+            <Link onClick={() => setOpenLogout(true)}>
               <FontAwesomeIcon icon={faArrowRightFromBracket} />
               {!isMobile ? <p> تسجيل الخروج</p> : ""}
             </Link>
           </div>
         </div>
       </div>
-      {openLogout && <AlertLogout/>}
+      {openLogout && <AlertLogout />}
     </div>
   );
 }

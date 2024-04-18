@@ -62,8 +62,8 @@ export default function SliderSymbolThouraUser() {
             {
               breakpoint: 480,
               settings: {
-                slidesToShow: 2,
-                slidesToScroll: 2,
+                slidesToShow: 1,
+                slidesToScroll: 1,
               },
             },
           ],
@@ -82,6 +82,7 @@ export default function SliderSymbolThouraUser() {
                       src={`https://syrianrevolution1.com/postImages/${sym.selfImg}`}
                       alt="symbolThowra"
                       className=" w-100 slide-image"
+                      style={{height:'250px'}}
                     />
                   </div>
                   <p className="px-2" style={{ textAlign: "center" }}>
