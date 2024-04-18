@@ -121,7 +121,7 @@ export default function RegisterUser() {
               style={{
                 position: "absolute",
                 top: "-20%",
-                right: "-25px",
+                right: "5px",
                 color: "red",
                 cursor: "pointer",
               }}
