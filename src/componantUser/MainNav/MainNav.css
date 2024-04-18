@@ -76,7 +76,11 @@ h1 {
   top: 30px;
   /* transform: translateY(-50%); */
 }
-
+@media(max-width:800px){
+  .notification-body{
+    width: 100%;
+  }
+}
 .notification-body hr {
   margin-top: 30px;
   margin-bottom: 30px;

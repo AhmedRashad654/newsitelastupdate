@@ -199,7 +199,7 @@ export default function MainNav() {
                 style={{
                   position: "absolute",
                   top: "-20%",
-                  right: "-20px",
+                  right: "5px",
                   color: "red",
                   cursor: "pointer",
                 }}

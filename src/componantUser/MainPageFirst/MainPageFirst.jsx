@@ -34,7 +34,7 @@ export default function MainPageFirst() {
             setMascer(
               result.data.data
             );
-          });
+          }).catch((error)=>console.log(error));
       }
       getMascers();
     }, []);

@@ -21,7 +21,7 @@ export default function NewsDetails() {
     useEffect(() => {
       axios.get("https://syrianrevolution1.com/lists").then((result) => {
         setArchirf(result.data.data);
-      });
+      }).catch((error)=>console.log(error));
     }, []);
   return (
     <>

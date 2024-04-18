@@ -11,7 +11,7 @@ export default function DataSiteDaaeh() {
   return (
     <div className={styles.DataSiteLastNews}>
       <div className={styles.allUser}>
-        <div className={styles.containerTable}>
+        <div className={`containerTable`}>
           <table>
             <thead>
               <tr>
