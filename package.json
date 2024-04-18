@@ -2,6 +2,7 @@
   "name": "grouplast",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:4600",
   "dependencies": {
     "homepage": "http://AhmedRashad654.github.io/newsitelastupdate",
     "@fortawesome/fontawesome-free": "^6.5.2",
