@@ -22,16 +22,16 @@ export default function ExeclSheet() {
     setSuccess( false );
     setLoading( true );
     await axios
-      .post("http://localhost:4500/sheet/addOne", user, {
+      .post("https://syrianrevolution1.com/sheet/addOne", user, {
         headers: {
           Authorization: localStorage.getItem("token"),
         },
       })
-      .then( ( result ) => {
-        console.log(result)
-        if ( result.data.success === "Row added successfully" ) {
-          setSuccess( true );
-          setLoading( false );
+      .then((result) => {
+        console.log(result);
+        if (result.data.success === "Row added successfully") {
+          setSuccess(true);
+          setLoading(false);
         }
       })
       .catch((error) => console.log(error));

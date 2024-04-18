@@ -50,7 +50,7 @@ export default function SearchExcel() {
     } else {
       setErrorListUser( '' )
       setLoading( true );
-    const url = `http://localhost:4500/sheet/search?name=${searched.name}&nickname=${searched.nickname}&fatherName=${searched.fatherName}`;
+    const url = `https://syrianrevolution1.com/sheet/search?name=${searched.name}&nickname=${searched.nickname}&fatherName=${searched.fatherName}`;
       await axios
         .get(url, {
           headers: {
@@ -75,18 +75,19 @@ export default function SearchExcel() {
   }
   async function handleDelete( id ) {
     setLoadingDeleted(true);
-    await axios.delete(
-      `http://localhost:4500/sheet/delete/${id}`, {
+    await axios
+      .delete(`https://syrianrevolution1.com/sheet/delete/${id}`, {
         headers: {
-          Authorization:localStorage.getItem('token')
+          Authorization: localStorage.getItem("token"),
+        },
+      })
+      .then((result) => {
+        if (result.data.message === "Deleted Successful") {
+          setLoadingDeleted(false);
+          handleSearch();
         }
-    } ).then( ( result ) => {
-      if ( result.data.message === "Deleted Successful" ) {
-        setLoadingDeleted(false);
-        handleSearch()
-        
-        }
-      }).catch((error)=>console.log(error));
+      })
+      .catch((error) => console.log(error));
   }
   return (
     <>

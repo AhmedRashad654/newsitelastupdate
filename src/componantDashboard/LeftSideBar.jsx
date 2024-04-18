@@ -156,6 +156,14 @@ export default function LeftSideBar() {
         </div>
         <div className={style.secondFourth}>
           <div className={style.headsecondsecond}>
+            <Link to='/'>
+              <FontAwesomeIcon icon={faArrowRightFromBracket} />
+              {!isMobile ? <p>  الرئيسية</p> : ""}
+            </Link>
+          </div>
+        </div>
+        <div className={style.secondFourth}>
+          <div className={style.headsecondsecond}>
             <Link onClick={() => setOpenLogout(true)}>
               <FontAwesomeIcon icon={faArrowRightFromBracket} />
               {!isMobile ? <p> تسجيل الخروج</p> : ""}
